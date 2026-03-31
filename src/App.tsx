@@ -92,7 +92,7 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
             </li>
             <li className="flex justify-between pt-2">
               <span>{t.status}</span>
-              <span className="bg-ink text-paper px-2">{t.online}</span>
+              <span className="bg-accent text-paper px-2 border border-paper">{t.online}</span>
             </li>
           </ul>
         </div>
