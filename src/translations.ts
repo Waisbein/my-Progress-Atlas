@@ -9,6 +9,7 @@ export const content = {
       skills: 'Skill Map',
       progress: 'Progress',
       works: 'Works',
+      console: 'Console',
       history: 'Version History',
       systemReady: 'SYSTEM_READY',
       memOk: 'MEM: 4096MB OK'
@@ -144,6 +145,15 @@ export const content = {
         { id: 'v0.2', date: '2026-03-31', title: 'Learning Plan introduced', desc: 'The site became a real learning tracker instead of a static concept.', status: 'RELEASED' },
         { id: 'v0.1', date: '2026-03-30', title: 'Structure established', desc: 'Base shell, navigation, and interface direction were defined.', status: 'FOUNDATION' },
       ]
+    },
+    console: {
+      title: 'CONSOLE',
+      meta: '[SEC-07] // INTERACTIVE',
+      prompt: 'user@akmal:~$',
+      placeholder: 'Enter command or query...',
+      send: 'EXECUTE',
+      welcome: 'System ready. I am your AI learning assistant. How can I help you today?',
+      error: 'ERROR: Connection failed.'
     }
   },
   ru: {
@@ -154,6 +164,7 @@ export const content = {
       skills: 'Карта навыков',
       progress: 'Прогресс',
       works: 'Работы',
+      console: 'Консоль',
       history: 'История версий',
       systemReady: 'СИСТЕМА_ГОТОВА',
       memOk: 'ПАМЯТЬ: 4096MB OK'
@@ -289,6 +300,15 @@ export const content = {
         { id: 'v0.2', date: '2026-03-31', title: 'Добавлен Learning Plan', desc: 'Сайт перестал быть статичной концепцией и стал реальным трекером обучения.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.1', date: '2026-03-30', title: 'Задана базовая структура', desc: 'Были определены основной каркас, навигация и визуальное направление интерфейса.', status: 'ОСНОВА' },
       ]
+    },
+    console: {
+      title: 'КОНСОЛЬ',
+      meta: '[SEC-07] // ИНТЕРАКТИВ',
+      prompt: 'user@akmal:~$',
+      placeholder: 'Введите команду или запрос...',
+      send: 'ВЫПОЛНИТЬ',
+      welcome: 'Система готова. Я ваш ИИ-ассистент по обучению. Чем могу помочь?',
+      error: 'ОШИБКА: Сбой подключения.'
     }
   }
 };

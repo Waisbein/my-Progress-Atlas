@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Terminal, ArrowRight, Activity, Database, Folder, Mail, Cpu, ChevronRight, History, ListChecks, Globe } from 'lucide-react';
 import { content, Lang } from './translations';
+import { GoogleGenAI } from '@google/genai';
 
 // --- COMPONENTS ---
 
@@ -360,6 +361,98 @@ const VersionHistory = ({ lang }: { lang: Lang }) => {
   );
 };
 
+const Console = ({ lang }: { lang: Lang }) => {
+  const t = content[lang].console;
+  const [messages, setMessages] = useState<{role: 'user' | 'assistant', text: string}[]>([
+    { role: 'assistant', text: t.welcome }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMsg = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+    setIsLoading(true);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'dummy' });
+      
+      const contents = messages.slice(1).map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.text }]
+      }));
+      contents.push({ role: 'user', parts: [{ text: userMsg }] });
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: contents as any,
+        config: {
+          systemInstruction: "You are an AI learning assistant for Akmal. Answer technically, brutally concisely, and in the language the user speaks.",
+        }
+      });
+
+      setMessages(prev => [...prev, { role: 'assistant', text: response.text || '' }]);
+    } catch (error) {
+      console.error(error);
+      setMessages(prev => [...prev, { role: 'assistant', text: t.error }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="animate-in fade-in duration-0 h-full flex flex-col">
+      <PageHeader title={t.title} metadata={t.meta} />
+      
+      <div className="flex-1 border border-ink bg-ink text-paper p-4 md:p-6 flex flex-col min-h-[400px] max-h-[600px] overflow-hidden">
+        <div className="flex-1 overflow-y-auto space-y-4 mb-4 font-mono text-sm md:text-base pr-2 custom-scrollbar">
+          {messages.map((m, i) => (
+            <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
+              <div className={`max-w-[90%] md:max-w-[80%] ${m.role === 'user' ? 'text-accent' : 'text-paper/90'}`}>
+                {m.role === 'user' && <span className="opacity-50 mr-2">{'>'}</span>}
+                <span className="whitespace-pre-wrap">{m.text}</span>
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="text-paper/50 animate-pulse">_</div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+        
+        <form onSubmit={handleSubmit} className="flex gap-2 border-t border-paper/20 pt-4">
+          <span className="font-mono text-accent hidden md:inline-block py-2">{t.prompt}</span>
+          <span className="font-mono text-accent md:hidden py-2">{'>'}</span>
+          <input 
+            type="text" 
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder={t.placeholder}
+            className="flex-1 bg-transparent border-none outline-none font-mono text-paper placeholder:text-paper/30 py-2"
+            autoFocus
+          />
+          <button 
+            type="submit" 
+            disabled={isLoading || !input.trim()}
+            className="font-mono text-ink bg-accent px-4 py-2 hover:bg-accent/80 disabled:opacity-50 disabled:cursor-not-allowed transition-none"
+          >
+            {t.send}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -392,6 +485,7 @@ export default function App() {
     { id: 'skills', label: t.skills, icon: Database },
     { id: 'progress', label: t.progress, icon: Activity },
     { id: 'works', label: t.works, icon: Folder },
+    { id: 'console', label: t.console, icon: Terminal },
     { id: 'history', label: t.history, icon: History },
   ];
 
@@ -402,6 +496,7 @@ export default function App() {
       case 'skills': return <Skills lang={lang} />;
       case 'progress': return <Progress lang={lang} completed={completed} planData={planData} />;
       case 'works': return <Works lang={lang} />;
+      case 'console': return <Console lang={lang} />;
       case 'history': return <VersionHistory lang={lang} />;
       default: return <Home lang={lang} setCurrentPage={setCurrentPage} />;
     }
