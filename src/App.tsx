@@ -411,39 +411,47 @@ const Console = ({ lang }: { lang: Lang }) => {
 
   return (
     <div className="animate-in fade-in duration-0 h-full flex flex-col">
-      <PageHeader title={t.title} metadata={t.meta} />
-      
-      <div className="flex-1 border border-ink bg-ink text-paper p-4 md:p-6 flex flex-col min-h-[400px] max-h-[600px] overflow-hidden">
-        <div className="flex-1 overflow-y-auto space-y-4 mb-4 font-mono text-sm md:text-base pr-2 custom-scrollbar">
+      <div className="flex-1 bg-ink text-accent p-6 md:p-8 flex flex-col min-h-[500px] max-h-[700px] overflow-hidden font-mono shadow-xl">
+        {/* Header */}
+        <div className="flex justify-between items-center pb-4 border-b border-accent/30 mb-6">
+          <span className="uppercase tracking-widest">{t.title}</span>
+          <div className="w-3 h-3 bg-accent"></div>
+        </div>
+        
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto space-y-6 mb-6 pr-2 custom-scrollbar">
           {messages.map((m, i) => (
-            <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
-              <div className={`max-w-[90%] md:max-w-[80%] ${m.role === 'user' ? 'text-accent' : 'text-paper/90'}`}>
-                {m.role === 'user' && <span className="opacity-50 mr-2">{'>'}</span>}
-                <span className="whitespace-pre-wrap">{m.text}</span>
+            <div key={i} className="flex flex-col items-start">
+              <div className="text-accent whitespace-pre-wrap leading-relaxed">
+                <span className="opacity-70 mr-2">{m.role === 'assistant' ? t.sysPrefix : t.userPrefix}</span>
+                {m.text}
               </div>
             </div>
           ))}
           {isLoading && (
-            <div className="text-paper/50 animate-pulse">_</div>
+            <div className="text-accent animate-pulse">
+              <span className="opacity-70 mr-2">{t.sysPrefix}</span>
+              _
+            </div>
           )}
           <div ref={bottomRef} />
         </div>
         
-        <form onSubmit={handleSubmit} className="flex gap-2 border-t border-paper/20 pt-4">
-          <span className="font-mono text-accent hidden md:inline-block py-2">{t.prompt}</span>
-          <span className="font-mono text-accent md:hidden py-2">{'>'}</span>
+        {/* Input */}
+        <form onSubmit={handleSubmit} className="flex gap-3 border-t border-accent/30 pt-6 items-center">
+          <span className="opacity-70">{t.inputPrefix}</span>
           <input 
             type="text" 
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder={t.placeholder}
-            className="flex-1 bg-transparent border-none outline-none font-mono text-paper placeholder:text-paper/30 py-2"
+            className="flex-1 bg-transparent border-none outline-none text-accent placeholder:text-accent/30"
             autoFocus
           />
           <button 
             type="submit" 
             disabled={isLoading || !input.trim()}
-            className="font-mono text-ink bg-accent px-4 py-2 hover:bg-accent/80 disabled:opacity-50 disabled:cursor-not-allowed transition-none"
+            className="hidden md:block px-4 py-1 border border-accent/30 hover:bg-accent hover:text-ink disabled:opacity-50 disabled:cursor-not-allowed transition-none"
           >
             {t.send}
           </button>

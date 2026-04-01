@@ -147,13 +147,15 @@ export const content = {
       ]
     },
     console: {
-      title: 'CONSOLE',
+      title: 'TERMINAL // ACTIVE',
       meta: '[SEC-07] // INTERACTIVE',
-      prompt: 'user@akmal:~$',
-      placeholder: 'Enter command or query...',
+      sysPrefix: 'SYS >',
+      userPrefix: 'USER >',
+      inputPrefix: 'INPUT>',
+      placeholder: 'Query knowledge base...',
       send: 'EXECUTE',
-      welcome: 'System ready. I am your AI learning assistant. How can I help you today?',
-      error: 'ERROR: Connection failed.'
+      welcome: 'NOTEBOOK_LM DIAGNOSTIC TERMINAL v2.1\nCONNECTION ESTABLISHED.\nREADY FOR QUERY.',
+      error: 'ERROR: CONNECTION FAILED.'
     }
   },
   ru: {
@@ -302,13 +304,15 @@ export const content = {
       ]
     },
     console: {
-      title: 'КОНСОЛЬ',
+      title: 'ТЕРМИНАЛ // АКТИВЕН',
       meta: '[SEC-07] // ИНТЕРАКТИВ',
-      prompt: 'user@akmal:~$',
-      placeholder: 'Введите команду или запрос...',
+      sysPrefix: 'SYS >',
+      userPrefix: 'USER >',
+      inputPrefix: 'INPUT>',
+      placeholder: 'Введите запрос в базу знаний...',
       send: 'ВЫПОЛНИТЬ',
-      welcome: 'Система готова. Я ваш ИИ-ассистент по обучению. Чем могу помочь?',
-      error: 'ОШИБКА: Сбой подключения.'
+      welcome: 'NOTEBOOK_LM ДИАГНОСТИЧЕСКИЙ ТЕРМИНАЛ v2.1\nСОЕДИНЕНИЕ УСТАНОВЛЕНО.\nГОТОВ К ЗАПРОСУ.',
+      error: 'ОШИБКА: СБОЙ ПОДКЛЮЧЕНИЯ.'
     }
   }
 };
