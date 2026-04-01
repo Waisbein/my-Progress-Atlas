@@ -12,7 +12,8 @@ export const content = {
       console: 'Console',
       history: 'Version History',
       systemReady: 'SYSTEM_READY',
-      memOk: 'MEM: 4096MB OK'
+      uptime: 'UPTIME: ',
+      days: ' DAYS'
     },
     home: {
       title: 'SYSTEM INIT',
@@ -155,7 +156,8 @@ export const content = {
       placeholder: 'Query knowledge base...',
       send: 'EXECUTE',
       welcome: 'NOTEBOOK_LM DIAGNOSTIC TERMINAL v2.1\nCONNECTION ESTABLISHED.\nREADY FOR QUERY.',
-      error: 'ERROR: CONNECTION FAILED.'
+      error: 'ERROR: CONNECTION FAILED.',
+      missingKey: 'ERROR: API KEY MISSING.\nRunning outside AI Studio requires a valid GEMINI_API_KEY environment variable.'
     }
   },
   ru: {
@@ -169,7 +171,8 @@ export const content = {
       console: 'Консоль',
       history: 'История версий',
       systemReady: 'СИСТЕМА_ГОТОВА',
-      memOk: 'ПАМЯТЬ: 4096MB OK'
+      uptime: 'АПТАЙМ: ',
+      days: ' ДНЕЙ'
     },
     home: {
       title: 'СИСТЕМНЫЙ СТАРТ',
@@ -312,7 +315,8 @@ export const content = {
       placeholder: 'Введите запрос в базу знаний...',
       send: 'ВЫПОЛНИТЬ',
       welcome: 'NOTEBOOK_LM ДИАГНОСТИЧЕСКИЙ ТЕРМИНАЛ v2.1\nСОЕДИНЕНИЕ УСТАНОВЛЕНО.\nГОТОВ К ЗАПРОСУ.',
-      error: 'ОШИБКА: СБОЙ ПОДКЛЮЧЕНИЯ.'
+      error: 'ОШИБКА: СБОЙ ПОДКЛЮЧЕНИЯ.',
+      missingKey: 'ОШИБКА: ОТСУТСТВУЕТ API КЛЮЧ.\nДля работы вне AI Studio необходимо добавить GEMINI_API_KEY в переменные окружения.'
     }
   }
 };

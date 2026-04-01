@@ -384,7 +384,12 @@ const Console = ({ lang }: { lang: Lang }) => {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'dummy' });
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey || apiKey === 'dummy') {
+        throw new Error('API_KEY_MISSING');
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
       
       const contents = messages.slice(1).map(m => ({
         role: m.role === 'assistant' ? 'model' : 'user',
@@ -401,9 +406,13 @@ const Console = ({ lang }: { lang: Lang }) => {
       });
 
       setMessages(prev => [...prev, { role: 'assistant', text: response.text || '' }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setMessages(prev => [...prev, { role: 'assistant', text: t.error }]);
+      if (error.message === 'API_KEY_MISSING' || error.message?.includes('400') || error.message?.includes('403')) {
+        setMessages(prev => [...prev, { role: 'assistant', text: (t as any).missingKey || t.error }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', text: t.error }]);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -466,6 +475,13 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [lang, setLang] = useState<Lang>('en');
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    // Обновляем время каждую минуту, чтобы аптайм не застывал, если вкладка открыта долго
+    const timer = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem('learningOS_plan');
@@ -486,6 +502,10 @@ export default function App() {
 
   const t = content[lang].nav;
   const planData = content[lang].plan.weeks;
+
+  const startDate = new Date('2026-03-30T00:00:00');
+  const diffTime = Math.abs(now.getTime() - startDate.getTime());
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   const navItems = [
     { id: 'home', label: t.home, icon: Activity },
@@ -588,7 +608,7 @@ export default function App() {
             <Cpu className="w-4 h-4" />
             <span>{t.systemReady}</span>
           </div>
-          <div>{t.memOk}</div>
+          <div>{t.uptime}{diffDays}{t.days}</div>
         </div>
       </nav>
 
