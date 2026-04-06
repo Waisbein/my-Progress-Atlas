@@ -238,83 +238,147 @@ const Works = ({ lang }: { lang: Lang }) => {
 
 const LearningPlan = ({ lang, completed, toggleTask, planData }: { lang: Lang, completed: Record<string, boolean>, toggleTask: (id: string) => void, planData: any[] }) => {
   const t = content[lang].plan;
+  const [viewMode, setViewMode] = useState<'main' | 'bg'>('main');
 
-  const totalTasks = planData.reduce((acc, w) => acc + w.tasks.length, 0);
-  const completedCount = Object.values(completed).filter(Boolean).length;
-  const overallPercent = Math.round((completedCount / totalTasks) * 100) || 0;
+  // Main Thread progress
+  const mainTotalTasks = planData.reduce((acc, w) => acc + w.tasks.length, 0);
+  const mainCompletedCount = planData.reduce((acc, w) => acc + w.tasks.filter((task: any) => completed[task.id]).length, 0);
+  const mainPercent = Math.round((mainCompletedCount / mainTotalTasks) * 100) || 0;
+
+  // Background Process progress
+  const bgTotalTasks = t.foundations.tasks.length;
+  const bgCompletedCount = t.foundations.tasks.filter((task: any) => completed[task.id]).length;
+  const bgPercent = Math.round((bgCompletedCount / bgTotalTasks) * 100) || 0;
   
   const getAsciiBar = (percent: number, length = 20) => {
     const filled = Math.round((percent / 100) * length);
     return `[${'█'.repeat(filled)}${'░'.repeat(length - filled)}]`;
   };
 
+  const renderMainThread = () => (
+    <div className="space-y-12">
+      {/* Overall Progress */}
+      <div className="border border-ink p-6 bg-ink text-paper">
+         <div className="font-mono text-xs uppercase mb-4 text-ink-muted">{t.overall}</div>
+         <div className="font-mono text-accent text-xl md:text-3xl tracking-widest mb-2">
+           {getAsciiBar(mainPercent, 20)} {mainPercent}%
+         </div>
+         <div className="font-mono text-xs text-ink-muted">
+           {mainCompletedCount} / {mainTotalTasks} {t.tasksCompleted}
+         </div>
+      </div>
+
+      {planData.map(week => {
+         const weekTotal = week.tasks.length;
+         const weekCompleted = week.tasks.filter((task: any) => completed[task.id]).length;
+         const weekPercent = Math.round((weekCompleted / weekTotal) * 100) || 0;
+
+         return (
+           <div key={week.week} className="border border-ink">
+             <div className="border-b border-ink p-4 bg-ink/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+               <div>
+                 <div className="font-mono text-xs text-ink-muted uppercase mb-1">{t.week} {week.week}</div>
+                 <h3 className="font-display text-xl uppercase tracking-tight">{week.title}</h3>
+               </div>
+               <div className="font-mono text-sm text-accent text-left md:text-right">
+                 <div className="hidden md:block">{getAsciiBar(weekPercent, 10)} {weekPercent}%</div>
+                 <div className="md:hidden">{getAsciiBar(weekPercent, 15)} {weekPercent}%</div>
+               </div>
+             </div>
+             
+             <div className="divide-y divide-ink">
+               {week.tasks.map((task: any) => (
+                 <div 
+                   key={task.id} 
+                   onClick={() => toggleTask(task.id)}
+                   className="p-4 flex flex-col md:flex-row md:items-center gap-4 hover:bg-ink hover:text-paper transition-none cursor-pointer group"
+                 >
+                   <div className="flex items-center gap-4 flex-1">
+                     <button className={`font-mono text-lg ${completed[task.id] ? 'text-accent' : 'text-ink group-hover:text-paper'}`}>
+                       {completed[task.id] ? '[■]' : '[ ]'}
+                     </button>
+                     <div className="font-mono text-xs text-ink-muted group-hover:text-paper/50 w-12 shrink-0">
+                       {t.day} {task.day}
+                     </div>
+                     <div className={`font-body text-base ${completed[task.id] ? 'line-through opacity-50' : ''}`}>
+                       {task.text}
+                     </div>
+                   </div>
+                   <a 
+                     href="#" 
+                     onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} 
+                     className="font-mono text-xs border border-ink px-2 py-1 text-ink-muted hover:bg-paper hover:text-ink group-hover:border-paper group-hover:text-paper ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0"
+                   >
+                     {t.ref}
+                   </a>
+                 </div>
+               ))}
+             </div>
+           </div>
+         )
+      })}
+    </div>
+  );
+
+  const renderBackgroundProcess = () => (
+    <div className="space-y-8 font-mono bg-ink text-accent p-6 md:p-8 shadow-xl min-h-full">
+      <div className="border border-accent p-4 mb-8">
+         <div className="text-xs uppercase mb-4 opacity-70">SYSTEM.KERNEL.FOUNDATIONS</div>
+         <div className="text-xl md:text-2xl tracking-widest mb-2">
+           {getAsciiBar(bgPercent, 15)} {bgPercent}%
+         </div>
+         <div className="text-xs opacity-70">
+           {bgCompletedCount} / {bgTotalTasks} {t.tasksCompleted}
+         </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="text-sm opacity-70 mb-4 border-b border-accent/30 pb-2">
+          {t.foundations.title}
+        </div>
+        {t.foundations.tasks.map((task: any) => (
+          <div 
+            key={task.id} 
+            className="flex items-start gap-4 cursor-pointer group"
+            onClick={() => toggleTask(task.id)}
+          >
+            <div className="mt-1 text-accent">
+              {completed[task.id] ? '[x]' : '[ ]'}
+            </div>
+            <div className="flex-1">
+              <div className="text-xs opacity-50 mb-1">{task.ref}</div>
+              <div className={`text-sm md:text-base ${completed[task.id] ? 'opacity-50 line-through' : 'group-hover:opacity-80'}`}>
+                {task.text}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="animate-in fade-in duration-0">
       <PageHeader title={t.title} metadata={t.meta} />
       
-      {/* Overall Progress */}
-      <div className="border border-ink p-6 mb-12 bg-ink text-paper">
-         <div className="font-mono text-xs uppercase mb-4 text-ink-muted">{t.overall}</div>
-         <div className="font-mono text-accent text-xl md:text-3xl tracking-widest mb-2">
-           {getAsciiBar(overallPercent, 20)} {overallPercent}%
-         </div>
-         <div className="font-mono text-xs text-ink-muted">
-           {completedCount} / {totalTasks} {t.tasksCompleted}
-         </div>
+      {/* Thread Switcher */}
+      <div className="flex flex-col md:flex-row gap-2 mb-8 font-mono text-xs md:text-sm">
+        <button 
+          onClick={() => setViewMode('main')}
+          className={`px-4 py-2 border ${viewMode === 'main' ? 'bg-ink text-paper border-ink' : 'border-ink text-ink hover:bg-ink/5'}`}
+        >
+          {t.threads.main}
+        </button>
+        <button 
+          onClick={() => setViewMode('bg')}
+          className={`px-4 py-2 border ${viewMode === 'bg' ? 'bg-ink text-accent border-ink' : 'border-ink text-ink hover:bg-ink/5'}`}
+        >
+          {t.threads.bg}
+        </button>
       </div>
 
-      {/* Weeks */}
-      <div className="space-y-12">
-        {planData.map(week => {
-           const weekTotal = week.tasks.length;
-           const weekCompleted = week.tasks.filter((task: any) => completed[task.id]).length;
-           const weekPercent = Math.round((weekCompleted / weekTotal) * 100) || 0;
-
-           return (
-             <div key={week.week} className="border border-ink">
-               <div className="border-b border-ink p-4 bg-ink/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                 <div>
-                   <div className="font-mono text-xs text-ink-muted uppercase mb-1">{t.week} {week.week}</div>
-                   <h3 className="font-display text-xl uppercase tracking-tight">{week.title}</h3>
-                 </div>
-                 <div className="font-mono text-sm text-accent text-left md:text-right">
-                   <div className="hidden md:block">{getAsciiBar(weekPercent, 10)} {weekPercent}%</div>
-                   <div className="md:hidden">{getAsciiBar(weekPercent, 15)} {weekPercent}%</div>
-                 </div>
-               </div>
-               
-               <div className="divide-y divide-ink">
-                 {week.tasks.map((task: any) => (
-                   <div 
-                     key={task.id} 
-                     onClick={() => toggleTask(task.id)}
-                     className="p-4 flex flex-col md:flex-row md:items-center gap-4 hover:bg-ink hover:text-paper transition-none cursor-pointer group"
-                   >
-                     <div className="flex items-center gap-4 flex-1">
-                       <button className={`font-mono text-lg ${completed[task.id] ? 'text-accent' : 'text-ink group-hover:text-paper'}`}>
-                         {completed[task.id] ? '[■]' : '[ ]'}
-                       </button>
-                       <div className="font-mono text-xs text-ink-muted group-hover:text-paper/50 w-12 shrink-0">
-                         {t.day} {task.day}
-                       </div>
-                       <div className={`font-body text-base ${completed[task.id] ? 'line-through opacity-50' : ''}`}>
-                         {task.text}
-                       </div>
-                     </div>
-                     <a 
-                       href="#" 
-                       onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} 
-                       className="font-mono text-xs border border-ink px-2 py-1 text-ink-muted hover:bg-paper hover:text-ink group-hover:border-paper group-hover:text-paper ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0"
-                     >
-                       {t.ref}
-                     </a>
-                   </div>
-                 ))}
-               </div>
-             </div>
-           )
-        })}
-      </div>
+      {viewMode === 'main' && renderMainThread()}
+      {viewMode === 'bg' && renderBackgroundProcess()}
     </div>
   );
 };

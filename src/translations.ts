@@ -40,6 +40,21 @@ export const content = {
       ref: 'REF',
       overall: 'OVERALL PROGRESS',
       tasksCompleted: 'TASKS COMPLETED',
+      threads: {
+        main: 'MAIN THREAD: WEB DEV',
+        bg: 'BACKGROUND PROCESS: FOUNDATIONS',
+      },
+      foundations: {
+        title: 'COMPUTER FOUNDATIONS',
+        tasks: [
+          { id: 'cf1', ref: 'CF-01', text: '[STUDY] What is a computer: input, output, memory, CPU' },
+          { id: 'cf2', ref: 'CF-02', text: '[STUDY] Data representation: bits, bytes, binary logic' },
+          { id: 'cf3', ref: 'CF-03', text: '[STUDY] How CPU works: fetch -> decode -> execute' },
+          { id: 'cf4', ref: 'CF-04', text: '[STUDY] Memory: cache, RAM, storage' },
+          { id: 'cf5', ref: 'CF-05', text: '[STUDY] Program execution via OS and hardware' },
+          { id: 'cf6', ref: 'CF-06', text: '[STUDY] Nand2Tetris: boolean logic / gates / computer from first principles' }
+        ]
+      },
       weeks: [
         {
           week: 1,
@@ -139,7 +154,8 @@ export const content = {
       title: 'VERSION HISTORY',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
-        { id: 'v0.6', date: '2026-03-31', title: 'Russian localization added', desc: 'A Russian language version was introduced, along with a language toggle in the interface. The site can now switch between language modes and better reflect its intended audience.', status: 'ACTIVE' },
+        { id: 'v0.7', date: '2026-04-06', title: 'Parallel Track: Computer Foundations added', desc: 'Introduced a dual-thread learning model. The curriculum is split into a main applied layer (Web Dev) and a background process for studying Computer Science fundamentals.', status: 'ACTIVE' },
+        { id: 'v0.6', date: '2026-03-31', title: 'Russian localization added', desc: 'A Russian language version was introduced, along with a language toggle in the interface. The site can now switch between language modes and better reflect its intended audience.', status: 'RELEASED' },
         { id: 'v0.5', date: '2026-03-31', title: 'Information architecture cleaned up', desc: 'Redundant sections were removed, and the product structure became focused and intentional.', status: 'RELEASED' },
         { id: 'v0.4', date: '2026-03-31', title: 'Works grounded in real projects', desc: 'Placeholder artifacts were replaced by actual projects and proof-of-work.', status: 'RELEASED' },
         { id: 'v0.3', date: '2026-03-31', title: 'Progress model introduced', desc: 'Task completion, weekly tracking, and overall progress became first-class elements.', status: 'RELEASED' },
@@ -199,6 +215,21 @@ export const content = {
       ref: 'REF',
       overall: 'ОБЩИЙ ПРОГРЕСС',
       tasksCompleted: 'ВЫПОЛНЕННЫХ ЗАДАЧ',
+      threads: {
+        main: 'MAIN THREAD: WEB DEV',
+        bg: 'BACKGROUND PROCESS: FOUNDATIONS',
+      },
+      foundations: {
+        title: 'COMPUTER FOUNDATIONS',
+        tasks: [
+          { id: 'cf1', ref: 'CF-01', text: '[STUDY] Что такое компьютер: ввод, вывод, память, процессор' },
+          { id: 'cf2', ref: 'CF-02', text: '[STUDY] Как данные представлены в компьютере: биты, байты, бинарная логика' },
+          { id: 'cf3', ref: 'CF-03', text: '[STUDY] Как работает CPU: fetch -> decode -> execute' },
+          { id: 'cf4', ref: 'CF-04', text: '[STUDY] Память: cache, RAM, storage' },
+          { id: 'cf5', ref: 'CF-05', text: '[STUDY] Как программа исполняется через ОС и железо' },
+          { id: 'cf6', ref: 'CF-06', text: '[STUDY] Nand2Tetris: boolean logic / gates / computer from first principles' }
+        ]
+      },
       weeks: [
         {
           week: 1,
@@ -298,7 +329,8 @@ export const content = {
       title: 'ИСТОРИЯ ВЕРСИЙ',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
-        { id: 'v0.6', date: '2026-03-31', title: 'Добавлена русская локализация', desc: 'На сайте появилась русская версия и переключатель языков. Интерфейс теперь поддерживает переключение между языками и лучше соответствует своей реальной аудитории.', status: 'АКТИВНО' },
+        { id: 'v0.7', date: '2026-04-06', title: 'Добавлен параллельный трек: Computer Foundations', desc: 'Внедрена двухпоточная модель обучения. План разделен на основной прикладной уровень (Web Dev) и фоновый процесс для изучения основ Computer Science.', status: 'АКТИВНО' },
+        { id: 'v0.6', date: '2026-03-31', title: 'Добавлена русская локализация', desc: 'На сайте появилась русская версия и переключатель языков. Интерфейс теперь поддерживает переключение между языками и лучше соответствует своей реальной аудитории.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.5', date: '2026-03-31', title: 'Упрощена архитектура разделов', desc: 'Лишние разделы были убраны, а структура продукта стала чище и понятнее.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.4', date: '2026-03-31', title: 'Раздел Works привязан к реальным проектам', desc: 'Плейсхолдерные артефакты были заменены на настоящие проекты и proof-of-work.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.3', date: '2026-03-31', title: 'Появилась модель прогресса', desc: 'Отметка выполнения задач, недельный трекинг и общий прогресс стали базовыми элементами системы.', status: 'ВЫПУЩЕНО' },
