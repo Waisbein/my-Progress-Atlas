@@ -304,13 +304,24 @@ const LearningPlan = ({ lang, completed, toggleTask, planData }: { lang: Lang, c
                        {task.text}
                      </div>
                    </div>
-                   <a 
-                     href="#" 
-                     onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} 
-                     className="font-mono text-xs border border-ink px-2 py-1 text-ink-muted hover:bg-paper hover:text-ink group-hover:border-paper group-hover:text-paper ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0"
-                   >
-                     {t.ref}
-                   </a>
+                   {task.url ? (
+                     <a 
+                       href={task.url} 
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       onClick={(e) => { e.stopPropagation(); }} 
+                       className="font-mono text-xs border border-ink px-2 py-1 text-ink-muted hover:bg-paper hover:text-ink group-hover:border-paper group-hover:text-paper ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0"
+                     >
+                       {t.ref}
+                     </a>
+                   ) : (
+                     <span 
+                       className="font-mono text-xs border border-ink/30 px-2 py-1 text-ink-muted/30 ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0 cursor-not-allowed"
+                       title="No reference available"
+                     >
+                       {t.ref}
+                     </span>
+                   )}
                  </div>
                ))}
              </div>
