@@ -58,16 +58,6 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
           <p className="font-body text-lg leading-relaxed text-ink/80">
             {t.p3}
           </p>
-          
-          <div className="pt-8">
-            <button 
-              onClick={() => setCurrentPage('plan')}
-              className="group flex items-center gap-4 border-2 border-ink px-6 py-4 font-mono text-sm uppercase hover:bg-ink hover:text-paper transition-none"
-            >
-              <span>{t.btn}</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform duration-75" />
-            </button>
-          </div>
         </div>
 
         <div className="border border-ink p-6 self-start">

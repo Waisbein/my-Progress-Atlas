@@ -156,7 +156,8 @@ export const content = {
       title: 'VERSION HISTORY',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
-        { id: 'v0.7', date: '2026-04-06', title: 'Parallel Track: Computer Foundations added', desc: 'Introduced a dual-thread learning model. The curriculum is split into a main applied layer (Web Dev) and a background process for studying Computer Science fundamentals.', status: 'ACTIVE' },
+        { id: 'v0.8', date: '2026-04-13', title: 'Learning Plan upgraded: Assessment & References', desc: 'Introduced a local self-assessment system (5-point scale and notes) for each lesson. Linked specific tasks directly to the NotebookLM knowledge base.', status: 'ACTIVE' },
+        { id: 'v0.7', date: '2026-04-06', title: 'Parallel Track: Computer Foundations added', desc: 'Introduced a dual-thread learning model. The curriculum is split into a main applied layer (Web Dev) and a background process for studying Computer Science fundamentals.', status: 'RELEASED' },
         { id: 'v0.6', date: '2026-03-31', title: 'Russian localization added', desc: 'A Russian language version was introduced, along with a language toggle in the interface. The site can now switch between language modes and better reflect its intended audience.', status: 'RELEASED' },
         { id: 'v0.5', date: '2026-03-31', title: 'Information architecture cleaned up', desc: 'Redundant sections were removed, and the product structure became focused and intentional.', status: 'RELEASED' },
         { id: 'v0.4', date: '2026-03-31', title: 'Works grounded in real projects', desc: 'Placeholder artifacts were replaced by actual projects and proof-of-work.', status: 'RELEASED' },
@@ -333,7 +334,8 @@ export const content = {
       title: 'ИСТОРИЯ ВЕРСИЙ',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
-        { id: 'v0.7', date: '2026-04-06', title: 'Добавлен параллельный трек: Computer Foundations', desc: 'Внедрена двухпоточная модель обучения. План разделен на основной прикладной уровень (Web Dev) и фоновый процесс для изучения основ Computer Science.', status: 'АКТИВНО' },
+        { id: 'v0.8', date: '2026-04-13', title: 'Обновление Learning Plan: Самооценка и References', desc: 'Внедрена локальная система самооценки (5-балльная шкала и заметки) для каждого урока. Добавлены прямые ссылки (REF) на базу знаний в NotebookLM.', status: 'АКТИВНО' },
+        { id: 'v0.7', date: '2026-04-06', title: 'Добавлен параллельный трек: Computer Foundations', desc: 'Внедрена двухпоточная модель обучения. План разделен на основной прикладной уровень (Web Dev) и фоновый процесс для изучения основ Computer Science.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.6', date: '2026-03-31', title: 'Добавлена русская локализация', desc: 'На сайте появилась русская версия и переключатель языков. Интерфейс теперь поддерживает переключение между языками и лучше соответствует своей реальной аудитории.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.5', date: '2026-03-31', title: 'Упрощена архитектура разделов', desc: 'Лишние разделы были убраны, а структура продукта стала чище и понятнее.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.4', date: '2026-03-31', title: 'Раздел Works привязан к реальным проектам', desc: 'Плейсхолдерные артефакты были заменены на настоящие проекты и proof-of-work.', status: 'ВЫПУЩЕНО' },
