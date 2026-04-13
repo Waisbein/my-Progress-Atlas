@@ -99,36 +99,59 @@ const Skills = ({ lang }: { lang: Lang }) => {
       <PageHeader title={t.title} metadata={t.meta} />
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-l border-ink">
-        {/* Col 1 */}
-        <div className="border-r border-b border-ink p-6">
-          <div className="font-mono text-xs uppercase mb-6 text-accent flex items-center gap-2">
+        {/* Col 1: CORE (Heavy, solid) */}
+        <div className="border-r border-b border-ink p-6 bg-ink text-paper">
+          <div className="font-mono text-xs uppercase mb-6 text-paper/70 flex items-center gap-2">
             <span className="w-2 h-2 bg-accent inline-block"></span>
             {t.col1}
           </div>
           <div className="flex flex-wrap gap-2">
-            {t.tags.col1.map((tag, i) => <Tag key={i} active>{tag}</Tag>)}
+            {t.tags.col1.map((tag, i) => {
+              const isStruggling = tag === 'Shipping Discipline';
+              return (
+                <span 
+                  key={i} 
+                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${
+                    isStruggling 
+                      ? 'border-amber-500/50 bg-amber-500/10 text-amber-300/90 border-dashed cursor-help' 
+                      : 'border-paper/20 bg-paper/10 text-paper'
+                  }`}
+                  title={isStruggling ? (lang === 'ru' ? 'Зона роста: пока не хватает регулярности' : 'Needs attention: working on consistency') : undefined}
+                >
+                  {isStruggling ? `[!] ${tag}` : tag}
+                </span>
+              );
+            })}
           </div>
         </div>
 
-        {/* Col 2 */}
+        {/* Col 2: BUILDING (Outline, active) */}
         <div className="border-r border-b border-ink p-6">
-          <div className="font-mono text-xs uppercase mb-6 text-ink-muted flex items-center gap-2">
-            <span className="w-2 h-2 border border-ink-muted inline-block"></span>
+          <div className="font-mono text-xs uppercase mb-6 text-ink flex items-center gap-2">
+            <span className="w-2 h-2 border border-ink inline-block"></span>
             {t.col2}
           </div>
           <div className="flex flex-wrap gap-2">
-            {t.tags.col2.map((tag, i) => <Tag key={i}>{tag}</Tag>)}
+            {t.tags.col2.map((tag, i) => (
+              <span key={i} className="font-mono text-xs uppercase px-3 py-1.5 border border-ink text-ink">
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
 
-        {/* Col 3 */}
+        {/* Col 3: APPLIED (Light, dashed) */}
         <div className="border-r border-b border-ink p-6 bg-ink/5">
           <div className="font-mono text-xs uppercase mb-6 text-ink-muted flex items-center gap-2">
             <span className="w-2 h-2 bg-ink-muted inline-block"></span>
             {t.col3}
           </div>
-          <div className="flex flex-wrap gap-2 opacity-60">
-            {t.tags.col3.map((tag, i) => <Tag key={i}>{tag}</Tag>)}
+          <div className="flex flex-wrap gap-2">
+            {t.tags.col3.map((tag, i) => (
+              <span key={i} className="font-mono text-xs uppercase px-3 py-1.5 border border-dashed border-ink/30 text-ink/70 bg-paper/50">
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </div>

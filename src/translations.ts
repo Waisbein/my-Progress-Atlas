@@ -114,14 +114,14 @@ export const content = {
     },
     skills: {
       title: 'SKILL MAP',
-      meta: '[SEC-03] // FOUNDATIONS MATRIX',
-      col1: 'FOUNDATION',
-      col2: 'ACTIVE PRACTICE',
-      col3: 'PRODUCT LAYER',
+      meta: '[SEC-03] // BUILDER PROFILE',
+      col1: 'CORE: PRODUCT & MINDSET',
+      col2: 'BUILDING: CS FOUNDATION',
+      col3: 'APPLIED: TECH STACK',
       tags: {
-        col1: ['System Model', 'Client-Server Flow', 'HTTP / API', 'SQL / Data Modeling', 'Storage Strategy', 'Auth Model'],
-        col2: ['React State', 'UI Behavior', 'Backend Basics', 'Deployment', 'Debugging', 'Local Persistence'],
-        col3: ['Product Thinking', 'Proof-of-Work', 'Public Learning', 'Shipping Discipline', 'AI-Native Workflow', 'Builder Judgment']
+        col1: ['Product Thinking', 'Proof-of-Work', 'Public Learning', 'Shipping Discipline', 'AI-Native Workflow', 'Builder Judgment'],
+        col2: ['System Model', 'Client-Server Flow', 'HTTP / API', 'SQL / Data Modeling', 'Storage Strategy', 'Auth Model'],
+        col3: ['React State', 'UI Behavior', 'Backend Basics', 'Deployment', 'Debugging', 'Local Persistence']
       }
     },
     progress: {
@@ -156,7 +156,8 @@ export const content = {
       title: 'VERSION HISTORY',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
-        { id: 'v0.8', date: '2026-04-13', title: 'Learning Plan upgraded: Assessment & References', desc: 'Introduced a local self-assessment system (5-point scale and notes) for each lesson. Linked specific tasks directly to the NotebookLM knowledge base.', status: 'ACTIVE' },
+        { id: 'v0.9', date: '2026-04-13', title: 'Skills Redesign & Honest Metrics', desc: 'Completely rethought the visual semantics of the skill map to reflect a T-shaped builder profile (Core, Building, Applied). Also, honestly marked "Shipping Discipline" as a failing metric. Building in public means admitting where the system breaks.', status: 'ACTIVE' },
+        { id: 'v0.8', date: '2026-04-13', title: 'Learning Plan upgraded: Assessment & References', desc: 'Introduced a local self-assessment system (5-point scale and notes) for each lesson. Linked specific tasks directly to the NotebookLM knowledge base.', status: 'RELEASED' },
         { id: 'v0.7', date: '2026-04-06', title: 'Parallel Track: Computer Foundations added', desc: 'Introduced a dual-thread learning model. The curriculum is split into a main applied layer (Web Dev) and a background process for studying Computer Science fundamentals.', status: 'RELEASED' },
         { id: 'v0.6', date: '2026-03-31', title: 'Russian localization added', desc: 'A Russian language version was introduced, along with a language toggle in the interface. The site can now switch between language modes and better reflect its intended audience.', status: 'RELEASED' },
         { id: 'v0.5', date: '2026-03-31', title: 'Information architecture cleaned up', desc: 'Redundant sections were removed, and the product structure became focused and intentional.', status: 'RELEASED' },
@@ -292,14 +293,14 @@ export const content = {
     },
     skills: {
       title: 'КАРТА НАВЫКОВ',
-      meta: '[SEC-03] // FOUNDATIONS MATRIX',
-      col1: 'ФУНДАМЕНТ',
-      col2: 'АКТИВНАЯ ПРАКТИКА',
-      col3: 'ПРОДУКТОВЫЙ СЛОЙ',
+      meta: '[SEC-03] // ПРОФИЛЬ БИЛДЕРА',
+      col1: 'ЯДРО: ПРОДУКТ И МЫШЛЕНИЕ',
+      col2: 'СТРОИТСЯ: ФУНДАМЕНТ CS',
+      col3: 'ПРИКЛАДНОЕ: ТЕХНОЛОГИИ',
       tags: {
-        col1: ['Системная модель', 'Client-Server Flow', 'HTTP / API', 'SQL / Моделирование данных', 'Storage Strategy', 'Auth Model'],
-        col2: ['React State', 'Поведение интерфейса', 'Backend Basics', 'Deployment', 'Debugging', 'Local Persistence'],
-        col3: ['Product Thinking', 'Proof-of-Work', 'Public Learning', 'Shipping Discipline', 'AI-Native Workflow', 'Builder Judgment']
+        col1: ['Product Thinking', 'Proof-of-Work', 'Public Learning', 'Shipping Discipline', 'AI-Native Workflow', 'Builder Judgment'],
+        col2: ['Системная модель', 'Client-Server Flow', 'HTTP / API', 'SQL / Моделирование данных', 'Storage Strategy', 'Auth Model'],
+        col3: ['React State', 'Поведение интерфейса', 'Backend Basics', 'Deployment', 'Debugging', 'Local Persistence']
       }
     },
     progress: {
@@ -334,7 +335,8 @@ export const content = {
       title: 'ИСТОРИЯ ВЕРСИЙ',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
-        { id: 'v0.8', date: '2026-04-13', title: 'Обновление Learning Plan: Самооценка и References', desc: 'Внедрена локальная система самооценки (5-балльная шкала и заметки) для каждого урока. Добавлены прямые ссылки (REF) на базу знаний в NotebookLM.', status: 'АКТИВНО' },
+        { id: 'v0.9', date: '2026-04-13', title: 'Редизайн Skills и честные метрики', desc: 'Полностью переосмыслена визуальная семантика карты навыков (Ядро, Фундамент, Инструменты). Также навык "Shipping Discipline" честно отмечен как проседающий. Строить публично — значит признавать, где система дает сбой.', status: 'АКТИВНО' },
+        { id: 'v0.8', date: '2026-04-13', title: 'Обновление Learning Plan: Самооценка и References', desc: 'Внедрена локальная система самооценки (5-балльная шкала и заметки) для каждого урока. Добавлены прямые ссылки (REF) на базу знаний в NotebookLM.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.7', date: '2026-04-06', title: 'Добавлен параллельный трек: Computer Foundations', desc: 'Внедрена двухпоточная модель обучения. План разделен на основной прикладной уровень (Web Dev) и фоновый процесс для изучения основ Computer Science.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.6', date: '2026-03-31', title: 'Добавлена русская локализация', desc: 'На сайте появилась русская версия и переключатель языков. Интерфейс теперь поддерживает переключение между языками и лучше соответствует своей реальной аудитории.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.5', date: '2026-03-31', title: 'Упрощена архитектура разделов', desc: 'Лишние разделы были убраны, а структура продукта стала чище и понятнее.', status: 'ВЫПУЩЕНО' },
