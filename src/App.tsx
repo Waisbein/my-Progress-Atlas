@@ -236,7 +236,18 @@ const Works = ({ lang }: { lang: Lang }) => {
 
 // --- LAYOUT ---
 
-const LearningPlan = ({ lang, completed, toggleTask, planData }: { lang: Lang, completed: Record<string, boolean>, toggleTask: (id: string) => void, planData: any[] }) => {
+const LearningPlan = ({ 
+  lang, completed, toggleTask, planData, ratings, updateRating, notes, updateNote 
+}: { 
+  lang: Lang, 
+  completed: Record<string, boolean>, 
+  toggleTask: (id: string) => void, 
+  planData: any[],
+  ratings: Record<string, number>,
+  updateRating: (id: string, rating: number) => void,
+  notes: Record<string, string>,
+  updateNote: (id: string, note: string) => void
+}) => {
   const t = content[lang].plan;
   const [viewMode, setViewMode] = useState<'main' | 'bg'>('main');
 
@@ -290,38 +301,67 @@ const LearningPlan = ({ lang, completed, toggleTask, planData }: { lang: Lang, c
                {week.tasks.map((task: any) => (
                  <div 
                    key={task.id} 
-                   onClick={() => toggleTask(task.id)}
-                   className="p-4 flex flex-col md:flex-row md:items-center gap-4 hover:bg-ink hover:text-paper transition-none cursor-pointer group"
+                   className="p-4 flex flex-col gap-3 hover:bg-ink hover:text-paper transition-none group"
                  >
-                   <div className="flex items-center gap-4 flex-1">
-                     <button className={`font-mono text-lg ${completed[task.id] ? 'text-accent' : 'text-ink group-hover:text-paper'}`}>
-                       {completed[task.id] ? '[■]' : '[ ]'}
-                     </button>
-                     <div className="font-mono text-xs text-ink-muted group-hover:text-paper/50 w-12 shrink-0">
-                       {t.day} {task.day}
+                   <div className="flex flex-col md:flex-row md:items-center gap-4 cursor-pointer" onClick={() => toggleTask(task.id)}>
+                     <div className="flex items-center gap-4 flex-1">
+                       <button className={`font-mono text-lg ${completed[task.id] ? 'text-accent' : 'text-ink group-hover:text-paper'}`}>
+                         {completed[task.id] ? '[■]' : '[ ]'}
+                       </button>
+                       <div className="font-mono text-xs text-ink-muted group-hover:text-paper/50 w-12 shrink-0">
+                         {t.day} {task.day}
+                       </div>
+                       <div className={`font-body text-base ${completed[task.id] ? 'line-through opacity-50' : ''}`}>
+                         {task.text}
+                       </div>
                      </div>
-                     <div className={`font-body text-base ${completed[task.id] ? 'line-through opacity-50' : ''}`}>
-                       {task.text}
+                     {task.url ? (
+                       <a 
+                         href={task.url} 
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         onClick={(e) => { e.stopPropagation(); }} 
+                         className="font-mono text-xs border border-ink px-2 py-1 text-ink-muted hover:bg-paper hover:text-ink group-hover:border-paper group-hover:text-paper ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0"
+                       >
+                         {t.ref}
+                       </a>
+                     ) : (
+                       <span 
+                         className="font-mono text-xs border border-ink/30 px-2 py-1 text-ink-muted/30 ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0 cursor-not-allowed"
+                         title="No reference available"
+                       >
+                         {t.ref}
+                       </span>
+                     )}
+                   </div>
+                   
+                   {/* Assessment & Note */}
+                   <div className="ml-[4.5rem] flex flex-col lg:flex-row gap-4 lg:items-center font-mono text-xs text-ink-muted group-hover:text-paper/70">
+                     <div className="flex items-center gap-2">
+                       <span>{t.understanding}:</span>
+                       <div className="flex gap-1">
+                         {[1, 2, 3, 4, 5].map(num => (
+                           <button
+                             key={num}
+                             onClick={(e) => { e.stopPropagation(); updateRating(task.id, num); }}
+                             className={`w-5 h-5 flex items-center justify-center border ${ratings[task.id] === num ? 'border-accent text-accent' : 'border-current opacity-50 hover:opacity-100'}`}
+                           >
+                             {num}
+                           </button>
+                         ))}
+                       </div>
+                     </div>
+                     <div className="flex items-center gap-2 flex-1">
+                       <span>{t.note}:</span>
+                       <input
+                         type="text"
+                         value={notes[task.id] || ''}
+                         onChange={(e) => updateNote(task.id, e.target.value)}
+                         placeholder="..."
+                         className="flex-1 bg-transparent border-b border-current opacity-50 focus:opacity-100 outline-none px-1 py-0.5 placeholder:text-current placeholder:opacity-30"
+                       />
                      </div>
                    </div>
-                   {task.url ? (
-                     <a 
-                       href={task.url} 
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       onClick={(e) => { e.stopPropagation(); }} 
-                       className="font-mono text-xs border border-ink px-2 py-1 text-ink-muted hover:bg-paper hover:text-ink group-hover:border-paper group-hover:text-paper ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0"
-                     >
-                       {t.ref}
-                     </a>
-                   ) : (
-                     <span 
-                       className="font-mono text-xs border border-ink/30 px-2 py-1 text-ink-muted/30 ml-[4.5rem] md:ml-0 self-start md:self-auto shrink-0 cursor-not-allowed"
-                       title="No reference available"
-                     >
-                       {t.ref}
-                     </span>
-                   )}
                  </div>
                ))}
              </div>
@@ -350,16 +390,44 @@ const LearningPlan = ({ lang, completed, toggleTask, planData }: { lang: Lang, c
         {t.foundations.tasks.map((task: any) => (
           <div 
             key={task.id} 
-            className="flex items-start gap-4 cursor-pointer group"
-            onClick={() => toggleTask(task.id)}
+            className="flex flex-col gap-2 group"
           >
-            <div className="mt-1 text-accent">
-              {completed[task.id] ? '[x]' : '[ ]'}
+            <div className="flex items-start gap-4 cursor-pointer" onClick={() => toggleTask(task.id)}>
+              <div className="mt-1 text-accent">
+                {completed[task.id] ? '[x]' : '[ ]'}
+              </div>
+              <div className="flex-1">
+                <div className="text-xs opacity-50 mb-1">{task.ref}</div>
+                <div className={`text-sm md:text-base ${completed[task.id] ? 'opacity-50 line-through' : 'group-hover:opacity-80'}`}>
+                  {task.text}
+                </div>
+              </div>
             </div>
-            <div className="flex-1">
-              <div className="text-xs opacity-50 mb-1">{task.ref}</div>
-              <div className={`text-sm md:text-base ${completed[task.id] ? 'opacity-50 line-through' : 'group-hover:opacity-80'}`}>
-                {task.text}
+            
+            <div className="ml-8 flex flex-col lg:flex-row gap-4 lg:items-center font-mono text-xs opacity-50 focus-within:opacity-100 transition-opacity">
+              <div className="flex items-center gap-2">
+                <span>{t.understanding}:</span>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map(num => (
+                    <button
+                      key={num}
+                      onClick={(e) => { e.stopPropagation(); updateRating(task.id, num); }}
+                      className={`w-5 h-5 flex items-center justify-center border ${ratings[task.id] === num ? 'border-accent text-accent' : 'border-current hover:opacity-80'}`}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 flex-1">
+                <span>{t.note}:</span>
+                <input
+                  type="text"
+                  value={notes[task.id] || ''}
+                  onChange={(e) => updateNote(task.id, e.target.value)}
+                  placeholder="..."
+                  className="flex-1 bg-transparent border-b border-current outline-none px-1 py-0.5 placeholder:text-current placeholder:opacity-30"
+                />
               </div>
             </div>
           </div>
@@ -550,6 +618,8 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [lang, setLang] = useState<Lang>('en');
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
+  const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [notes, setNotes] = useState<Record<string, string>>({});
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -559,13 +629,17 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const saved = localStorage.getItem('learningOS_plan');
-    if (saved) {
-      try {
-        setCompleted(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse learning plan state');
-      }
+    const savedPlan = localStorage.getItem('learningOS_plan');
+    if (savedPlan) {
+      try { setCompleted(JSON.parse(savedPlan)); } catch (e) {}
+    }
+    const savedRatings = localStorage.getItem('learningOS_ratings');
+    if (savedRatings) {
+      try { setRatings(JSON.parse(savedRatings)); } catch (e) {}
+    }
+    const savedNotes = localStorage.getItem('learningOS_notes');
+    if (savedNotes) {
+      try { setNotes(JSON.parse(savedNotes)); } catch (e) {}
     }
   }, []);
 
@@ -573,6 +647,18 @@ export default function App() {
     const next = { ...completed, [id]: !completed[id] };
     setCompleted(next);
     localStorage.setItem('learningOS_plan', JSON.stringify(next));
+  };
+
+  const updateRating = (id: string, rating: number) => {
+    const next = { ...ratings, [id]: rating };
+    setRatings(next);
+    localStorage.setItem('learningOS_ratings', JSON.stringify(next));
+  };
+
+  const updateNote = (id: string, note: string) => {
+    const next = { ...notes, [id]: note };
+    setNotes(next);
+    localStorage.setItem('learningOS_notes', JSON.stringify(next));
   };
 
   const t = content[lang].nav;
@@ -595,7 +681,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home': return <Home lang={lang} setCurrentPage={setCurrentPage} />;
-      case 'plan': return <LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} />;
+      case 'plan': return <LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} />;
       case 'skills': return <Skills lang={lang} />;
       case 'progress': return <Progress lang={lang} completed={completed} planData={planData} />;
       case 'works': return <Works lang={lang} />;

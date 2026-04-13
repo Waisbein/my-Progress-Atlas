@@ -40,6 +40,8 @@ export const content = {
       ref: 'REF',
       overall: 'OVERALL PROGRESS',
       tasksCompleted: 'TASKS COMPLETED',
+      understanding: 'UNDERSTANDING',
+      note: 'NOTE',
       threads: {
         main: 'MAIN THREAD: WEB DEV',
         bg: 'BACKGROUND PROCESS: FOUNDATIONS',
@@ -215,6 +217,8 @@ export const content = {
       ref: 'REF',
       overall: 'ОБЩИЙ ПРОГРЕСС',
       tasksCompleted: 'ВЫПОЛНЕННЫХ ЗАДАЧ',
+      understanding: 'ПОНИМАНИЕ',
+      note: 'ЗАМЕТКА',
       threads: {
         main: 'MAIN THREAD: WEB DEV',
         bg: 'BACKGROUND PROCESS: FOUNDATIONS',
