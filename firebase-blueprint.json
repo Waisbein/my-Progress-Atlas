@@ -1,0 +1,50 @@
+{
+  "entities": {
+    "Progress": {
+      "title": "Progress",
+      "description": "Stores the user's learning progress, including completed tasks, ratings, and notes.",
+      "type": "object",
+      "properties": {
+        "completed": {
+          "type": "array",
+          "description": "List of completed task IDs",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ratings": {
+          "type": "object",
+          "description": "Map of task IDs to their 1-5 rating",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "notes": {
+          "type": "object",
+          "description": "Map of task IDs to their text notes",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The UID of the admin user who owns this progress"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last update"
+        }
+      },
+      "required": ["completed", "ratings", "notes", "ownerId"]
+    }
+  },
+  "firestore": {
+    "/progress/{userId}": {
+      "schema": {
+        "$ref": "#/entities/Progress"
+      },
+      "description": "Stores progress documents keyed by the user's UID."
+    }
+  }
+}

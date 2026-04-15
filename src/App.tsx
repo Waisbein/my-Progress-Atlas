@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Terminal, ArrowRight, Activity, Database, Folder, Mail, Cpu, ChevronRight, History, ListChecks, Globe } from 'lucide-react';
 import { content, Lang } from './translations';
 import { GoogleGenAI } from '@google/genai';
+import { auth } from './firebase';
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
 
 // --- COMPONENTS ---
 
@@ -517,7 +519,7 @@ const VersionHistory = ({ lang }: { lang: Lang }) => {
   );
 };
 
-const Console = ({ lang }: { lang: Lang }) => {
+const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdmin: boolean }) => {
   const t = content[lang].console;
   const [messages, setMessages] = useState<{role: 'user' | 'assistant', text: string}[]>([
     { role: 'assistant', text: t.welcome }
@@ -538,6 +540,32 @@ const Console = ({ lang }: { lang: Lang }) => {
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsLoading(true);
+
+    // Intercept system commands
+    if (userMsg.toLowerCase() === 'godmode') {
+      setMessages(prev => [...prev, { role: 'assistant', text: 'Initiating secure connection... Waiting for authorization.' }]);
+      try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        if (result.user.email === 'genialnee@gmail.com') {
+          setMessages(prev => [...prev, { role: 'assistant', text: 'Access granted. Welcome, Akmal.' }]);
+        } else {
+          setMessages(prev => [...prev, { role: 'assistant', text: 'Identity rejected. Public mode retained.' }]);
+          await signOut(auth);
+        }
+      } catch (error) {
+        setMessages(prev => [...prev, { role: 'assistant', text: 'Authorization aborted.' }]);
+      }
+      setIsLoading(false);
+      return;
+    }
+
+    if (userMsg.toLowerCase() === 'exit' && user) {
+      await signOut(auth);
+      setMessages(prev => [...prev, { role: 'assistant', text: 'Session terminated. Returned to public mode.' }]);
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const apiKey = process.env.GEMINI_API_KEY;
@@ -634,6 +662,16 @@ export default function App() {
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [now, setNow] = useState(new Date());
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setIsAdmin(currentUser?.email === 'genialnee@gmail.com');
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     // Обновляем время каждую минуту, чтобы аптайм не застывал, если вкладка открыта долго
@@ -698,7 +736,7 @@ export default function App() {
       case 'skills': return <Skills lang={lang} />;
       case 'progress': return <Progress lang={lang} completed={completed} planData={planData} />;
       case 'works': return <Works lang={lang} />;
-      case 'console': return <Console lang={lang} />;
+      case 'console': return <Console lang={lang} user={user} isAdmin={isAdmin} />;
       case 'history': return <VersionHistory lang={lang} />;
       default: return <Home lang={lang} setCurrentPage={setCurrentPage} />;
     }
@@ -782,7 +820,12 @@ export default function App() {
             <Cpu className="w-4 h-4" />
             <span>{t.systemReady}</span>
           </div>
-          <div>{t.uptime}{diffDays}{t.days}</div>
+          <div className="flex justify-between items-center">
+            <span>{t.uptime}{diffDays}{t.days}</span>
+            <span className={isAdmin ? 'text-accent' : 'opacity-50'}>
+              {isAdmin ? '[ADMIN MODE]' : '[PUBLIC MODE]'}
+            </span>
+          </div>
         </div>
       </nav>
 

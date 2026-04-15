@@ -66,7 +66,7 @@ export const content = {
             { id: 'd2', day: 2, text: "[STUDY] Draw system map and user flow", url: 'https://notebooklm.google.com/notebook/8b6d184a-63a5-4825-a55f-6b2a1a3ec26a?authuser=1' },
             { id: 'd3', day: 3, text: "[STUDY] Review HTTP, REST, status codes, and CORS", url: 'https://notebooklm.google.com/notebook/5daa2630-0874-46ab-9c30-5661de121290?authuser=1' },
             { id: 'd4', day: 4, text: "[STUDY] Learn client-server flow and request lifecycle", url: 'https://notebooklm.google.com/notebook/7f79d3ee-94e4-418a-929e-38fafeb20902?authuser=1' },
-            { id: 'd5', day: 5, text: "[STUDY] Map UI -> request -> server -> DB -> response -> UI" },
+            { id: 'd5', day: 5, text: "[STUDY] Map UI -> request -> server -> DB -> response -> UI", url: 'https://notebooklm.google.com/notebook/5daa2630-0874-46ab-9c30-5661de121290?authuser=1' },
             { id: 'd6', day: 6, text: "[BUILD] Set up learning plan tracking structure" },
             { id: 'd7', day: 7, text: "[REVIEW] Write week-one architecture note" },
           ]
@@ -245,7 +245,7 @@ export const content = {
             { id: 'd2', day: 2, text: "[STUDY] Нарисовать карту системы и user flow", url: 'https://notebooklm.google.com/notebook/8b6d184a-63a5-4825-a55f-6b2a1a3ec26a?authuser=1' },
             { id: 'd3', day: 3, text: "[STUDY] Повторить HTTP, REST, status codes и CORS", url: 'https://notebooklm.google.com/notebook/5daa2630-0874-46ab-9c30-5661de121290?authuser=1' },
             { id: 'd4', day: 4, text: "[STUDY] Изучить client-server flow и lifecycle запроса", url: 'https://notebooklm.google.com/notebook/7f79d3ee-94e4-418a-929e-38fafeb20902?authuser=1' },
-            { id: 'd5', day: 5, text: "[STUDY] Разобрать цепочку UI -> request -> server -> DB -> response -> UI" },
+            { id: 'd5', day: 5, text: "[STUDY] Разобрать цепочку UI -> request -> server -> DB -> response -> UI", url: 'https://notebooklm.google.com/notebook/5daa2630-0874-46ab-9c30-5661de121290?authuser=1' },
             { id: 'd6', day: 6, text: "[BUILD] Настроить структуру трекинга учебного плана" },
             { id: 'd7', day: 7, text: "[REVIEW] Написать архитектурную заметку по первой неделе" },
           ]
