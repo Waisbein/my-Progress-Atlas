@@ -519,9 +519,15 @@ const VersionHistory = ({ lang }: { lang: Lang }) => {
   );
 };
 
+interface Message {
+  role: 'user' | 'assistant';
+  text: string;
+  isAuthPrompt?: boolean;
+}
+
 const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdmin: boolean }) => {
   const t = content[lang].console;
-  const [messages, setMessages] = useState<{role: 'user' | 'assistant', text: string}[]>([
+  const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', text: t.welcome }
   ]);
   const [input, setInput] = useState('');
@@ -543,19 +549,11 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
 
     // Intercept system commands
     if (userMsg.toLowerCase() === 'godmode') {
-      setMessages(prev => [...prev, { role: 'assistant', text: 'Initiating secure connection... Waiting for authorization.' }]);
-      try {
-        const provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(auth, provider);
-        if (result.user.email === 'genialnee@gmail.com') {
-          setMessages(prev => [...prev, { role: 'assistant', text: 'Access granted. Welcome, Akmal.' }]);
-        } else {
-          setMessages(prev => [...prev, { role: 'assistant', text: 'Identity rejected. Public mode retained.' }]);
-          await signOut(auth);
-        }
-      } catch (error) {
-        setMessages(prev => [...prev, { role: 'assistant', text: 'Authorization aborted.' }]);
-      }
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        text: 'Initiating secure connection... Click [AUTHENTICATE] to proceed.',
+        isAuthPrompt: true 
+      }]);
       setIsLoading(false);
       return;
     }
@@ -602,6 +600,22 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
     }
   };
 
+  const handleManualAuth = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      if (result.user.email === 'genialnee@gmail.com') {
+        setMessages(prev => [...prev, { role: 'assistant', text: 'Access granted. Welcome, Akmal.' }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', text: 'Identity rejected. Public mode retained.' }]);
+        await signOut(auth);
+      }
+    } catch (error: any) {
+      console.error("Auth error:", error);
+      setMessages(prev => [...prev, { role: 'assistant', text: `Authorization aborted. [ERROR: ${error.message}]` }]);
+    }
+  };
+
   return (
     <div className="animate-in fade-in duration-0 h-full flex flex-col">
       <div className="flex-1 bg-ink text-accent p-6 md:p-8 flex flex-col min-h-[500px] max-h-[700px] overflow-hidden font-mono shadow-xl">
@@ -619,6 +633,14 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
                 <span className="opacity-70 mr-2">{m.role === 'assistant' ? t.sysPrefix : t.userPrefix}</span>
                 {m.text}
               </div>
+              {m.isAuthPrompt && !user && (
+                <button 
+                  onClick={handleManualAuth}
+                  className="mt-3 px-4 py-1 border border-accent hover:bg-accent hover:text-ink transition-none uppercase tracking-widest text-sm"
+                >
+                  [AUTHENTICATE]
+                </button>
+              )}
             </div>
           ))}
           {isLoading && (
