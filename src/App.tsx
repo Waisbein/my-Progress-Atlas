@@ -603,6 +603,9 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
   const handleManualAuth = async () => {
     try {
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
       const result = await signInWithPopup(auth, provider);
       if (result.user.email === 'genialnee@gmail.com') {
         setMessages(prev => [...prev, { role: 'assistant', text: 'Access granted. Welcome, Akmal.' }]);
