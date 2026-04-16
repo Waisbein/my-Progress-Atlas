@@ -600,19 +600,112 @@ const LearningPlan = ({
   );
 };
 
-const VersionHistory = ({ lang }: { lang: Lang }) => {
-  const t = content[lang].history;
+const VersionHistory = ({ 
+  lang, historyData, isAdmin, rawHistoryData, saveHistoryToFirestore 
+}: { 
+  lang: Lang, 
+  historyData: any, 
+  isAdmin: boolean,
+  rawHistoryData?: any[] | null,
+  saveHistoryToFirestore?: (d: any[]) => void 
+}) => {
+  const t = historyData;
+
+  const [editingVersion, setEditingVersion] = useState<number | 'new' | null>(null);
+  const [vForm, setVForm] = useState({ id: '', date: '', status: '', enTitle: '', ruTitle: '', enDesc: '', ruDesc: '' });
+
+  const openNewVersion = () => {
+    setVForm({ id: '', date: new Date().toISOString().split('T')[0], status: 'ACTIVE', enTitle: '', ruTitle: '', enDesc: '', ruDesc: '' });
+    setEditingVersion('new');
+  };
+
+  const openEditVersion = (index: number) => {
+    if (!rawHistoryData) return;
+    const v = rawHistoryData[index];
+    setVForm({
+      id: v.id || '', date: v.date || '', status: v.status || '',
+      enTitle: v.en?.title || '', ruTitle: v.ru?.title || '',
+      enDesc: v.en?.desc || '', ruDesc: v.ru?.desc || ''
+    });
+    setEditingVersion(index);
+  };
+
+  const saveVersion = () => {
+    if (!saveHistoryToFirestore) return;
+    const newData = rawHistoryData ? [...rawHistoryData] : [];
+    
+    const versionObj = {
+      id: vForm.id, date: vForm.date, status: vForm.status,
+      en: { title: vForm.enTitle, desc: vForm.enDesc },
+      ru: { title: vForm.ruTitle, desc: vForm.ruDesc }
+    };
+
+    if (editingVersion === 'new') {
+      newData.unshift(versionObj); // Add to the top
+    } else if (typeof editingVersion === 'number') {
+      newData[editingVersion] = versionObj;
+    }
+    
+    saveHistoryToFirestore(newData);
+    setEditingVersion(null);
+  };
+
+  const deleteVersion = (index: number) => {
+    if (!saveHistoryToFirestore || !rawHistoryData) return;
+    if (confirm("Are you sure you want to delete this version?")) {
+      const newData = [...rawHistoryData];
+      newData.splice(index, 1);
+      saveHistoryToFirestore(newData);
+    }
+  };
+
   return (
-    <div className="animate-in fade-in duration-0">
+    <div className="animate-in fade-in duration-0 relative">
       <PageHeader title={t.title} metadata={t.meta} />
       
+      {/* Modals overlay */}
+      {isAdmin && editingVersion !== null && (
+        <div className="fixed inset-0 bg-ink/80 z-[100] flex items-center justify-center p-4">
+          <div className="bg-paper text-ink p-6 border-2 border-accent max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h3 className="font-display text-xl uppercase mb-4 text-accent">
+              {editingVersion === 'new' ? 'Add New Version' : 'Edit Version'}
+            </h3>
+            <div className="space-y-4 font-mono text-sm flex flex-col">
+              <div className="flex gap-4">
+                <div className="flex-1"><label className="block mb-1 opacity-50">Version ID</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={vForm.id} onChange={e => setVForm({...vForm, id: e.target.value})} placeholder="e.g. v1.1.0" /></div>
+                <div className="flex-1"><label className="block mb-1 opacity-50">Date</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" type="date" value={vForm.date} onChange={e => setVForm({...vForm, date: e.target.value})} /></div>
+              </div>
+              <div><label className="block mb-1 opacity-50">Status</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={vForm.status} onChange={e => setVForm({...vForm, status: e.target.value})} placeholder="ACTIVE, RELEASED, etc." /></div>
+              
+              <div className="mt-4"><label className="block mb-1 opacity-50">Title (EN)</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={vForm.enTitle} onChange={e => setVForm({...vForm, enTitle: e.target.value})} /></div>
+              <div><label className="block mb-1 opacity-50">Title (RU)</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={vForm.ruTitle} onChange={e => setVForm({...vForm, ruTitle: e.target.value})} /></div>
+              
+              <div className="mt-4"><label className="block mb-1 opacity-50">Description (EN)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none h-24" value={vForm.enDesc} onChange={e => setVForm({...vForm, enDesc: e.target.value})} /></div>
+              <div><label className="block mb-1 opacity-50">Description (RU)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none h-24" value={vForm.ruDesc} onChange={e => setVForm({...vForm, ruDesc: e.target.value})} /></div>
+            </div>
+            <div className="mt-6 flex justify-end gap-4">
+              <button onClick={() => setEditingVersion(null)} className="px-4 py-2 border border-ink hover:bg-ink hover:text-paper uppercase text-sm">Cancel</button>
+              <button onClick={saveVersion} className="px-4 py-2 border border-accent bg-accent text-paper hover:bg-transparent hover:text-accent uppercase text-sm">Save</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isAdmin && (
+        <div className="mb-8">
+           <button onClick={openNewVersion} className="border border-accent text-accent px-4 py-2 uppercase font-mono text-xs hover:bg-accent hover:text-paper">
+             + Add New Version
+           </button>
+        </div>
+      )}
+
       <div className="relative pl-8 md:pl-0">
         {/* Vertical Line */}
         <div className="absolute left-0 md:left-[120px] top-0 bottom-0 w-px bg-ink"></div>
         
         <div className="space-y-12">
-          {t.items.map((ver, i) => (
-            <div key={i} className="relative md:pl-[160px]">
+          {t.items.map((ver: any, i: number) => (
+            <div key={i} className="relative md:pl-[160px] group/ver">
               {/* Tick mark */}
               <div className="absolute left-0 md:left-[120px] top-6 w-4 h-px bg-ink -translate-x-full md:translate-x-0"></div>
               
@@ -622,7 +715,7 @@ const VersionHistory = ({ lang }: { lang: Lang }) => {
                   <div className="text-ink-muted text-xs">{ver.date}</div>
                 </div>
                 
-                <div className="border border-ink p-6 w-full bg-paper hover:bg-ink hover:text-paper transition-none group">
+                <div className="border border-ink p-6 w-full bg-paper hover:bg-ink hover:text-paper transition-none group relative">
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4 gap-2 md:gap-0">
                     <h3 className="font-display text-xl uppercase tracking-tight">{ver.title}</h3>
                     <span className={`font-mono text-xs px-2 py-1 border self-start ${ver.status === 'ACTIVE' || ver.status === 'АКТИВНО' ? 'border-accent text-accent group-hover:border-accent' : 'border-ink group-hover:border-paper'}`}>
@@ -632,6 +725,17 @@ const VersionHistory = ({ lang }: { lang: Lang }) => {
                   <p className="font-body text-lg text-ink/80 group-hover:text-paper/80">
                     {ver.desc}
                   </p>
+                  
+                  {isAdmin && (
+                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover/ver:opacity-100">
+                       <button onClick={() => openEditVersion(i)} className="bg-paper text-ink px-2 py-1 uppercase font-mono text-[10px] border border-ink hover:bg-accent hover:border-accent hover:text-paper">
+                         Edit
+                       </button>
+                       <button onClick={() => deleteVersion(i)} className="bg-paper text-ink px-2 py-1 uppercase font-mono text-[10px] border border-ink hover:bg-red-500 hover:border-red-500 hover:text-paper">
+                         Delete
+                       </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -867,6 +971,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [rawPlanData, setRawPlanData] = useState<any[] | null>(null);
+  const [rawHistoryData, setRawHistoryData] = useState<any[] | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -889,6 +994,13 @@ export default function App() {
     const unsubPlan = onSnapshot(planRef, (docSnap) => {
       if (docSnap.exists()) {
         setRawPlanData(docSnap.data().weeks || null);
+      }
+    });
+
+    const historyRef = doc(db, 'content', 'history');
+    const unsubHistory = onSnapshot(historyRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setRawHistoryData(docSnap.data().versions || null);
       }
     });
 
@@ -923,6 +1035,7 @@ export default function App() {
 
     return () => {
       unsubPlan();
+      unsubHistory();
       if (unsubProgress) unsubProgress();
     };
   }, [isAdmin]);
@@ -987,6 +1100,27 @@ export default function App() {
     }
   };
 
+  const saveHistoryToFirestore = async (updatedRawHistory: any[]) => {
+    if (!isAdmin) return;
+    try {
+      await setDoc(doc(db, 'content', 'history'), { versions: updatedRawHistory }, { merge: true });
+    } catch (error) {
+      console.error("Error saving history:", error);
+    }
+  };
+
+  const historyData = rawHistoryData ? {
+    title: content[lang].history.title,
+    meta: content[lang].history.meta,
+    items: rawHistoryData.map(v => ({
+      id: v.id,
+      date: v.date,
+      status: v.status,
+      title: v[lang]?.title || '',
+      desc: v[lang]?.desc || ''
+    }))
+  } : content[lang].history;
+
   const startDate = new Date('2026-03-30T00:00:00');
   const diffTime = Math.abs(now.getTime() - startDate.getTime());
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -1009,7 +1143,7 @@ export default function App() {
       case 'progress': return <Progress lang={lang} completed={completed} planData={planData} />;
       case 'works': return <Works lang={lang} />;
       case 'console': return <Console lang={lang} user={user} isAdmin={isAdmin} />;
-      case 'history': return <VersionHistory lang={lang} />;
+      case 'history': return <VersionHistory lang={lang} historyData={historyData} isAdmin={isAdmin} rawHistoryData={rawHistoryData} saveHistoryToFirestore={saveHistoryToFirestore} />;
       default: return <Home lang={lang} setCurrentPage={setCurrentPage} />;
     }
   };
