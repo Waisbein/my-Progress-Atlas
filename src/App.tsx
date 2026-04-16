@@ -4,6 +4,8 @@ import { content, Lang } from './translations';
 import { GoogleGenAI } from '@google/genai';
 import { auth } from './firebase';
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase';
 
 // --- COMPONENTS ---
 
@@ -252,7 +254,7 @@ const Works = ({ lang }: { lang: Lang }) => {
 // --- LAYOUT ---
 
 const LearningPlan = ({ 
-  lang, completed, toggleTask, planData, ratings, updateRating, notes, updateNote 
+  lang, completed, toggleTask, planData, ratings, updateRating, notes, updateNote, isAdmin 
 }: { 
   lang: Lang, 
   completed: Record<string, boolean>, 
@@ -261,7 +263,8 @@ const LearningPlan = ({
   ratings: Record<string, number>,
   updateRating: (id: string, rating: number) => void,
   notes: Record<string, string>,
-  updateNote: (id: string, note: string) => void
+  updateNote: (id: string, note: string) => void,
+  isAdmin: boolean
 }) => {
   const t = content[lang].plan;
   const [viewMode, setViewMode] = useState<'main' | 'bg'>('main');
@@ -318,7 +321,7 @@ const LearningPlan = ({
                    key={task.id} 
                    className="p-4 flex flex-col gap-3 hover:bg-ink hover:text-paper transition-none group"
                  >
-                   <div className="flex flex-col md:flex-row md:items-center gap-4 cursor-pointer" onClick={() => toggleTask(task.id)}>
+                   <div className={`flex flex-col md:flex-row md:items-center gap-4 ${isAdmin ? 'cursor-pointer' : 'cursor-default'}`} onClick={() => isAdmin && toggleTask(task.id)}>
                      <div className="flex items-center gap-4 flex-1">
                        <button className={`font-mono text-lg ${completed[task.id] ? 'text-accent' : 'text-ink group-hover:text-paper'}`}>
                          {completed[task.id] ? '[■]' : '[ ]'}
@@ -358,8 +361,9 @@ const LearningPlan = ({
                          {[1, 2, 3, 4, 5].map(num => (
                            <button
                              key={num}
-                             onClick={(e) => { e.stopPropagation(); updateRating(task.id, num); }}
-                             className={`w-5 h-5 flex items-center justify-center border ${ratings[task.id] === num ? 'border-accent text-accent' : 'border-current opacity-50 hover:opacity-100'}`}
+                             onClick={(e) => { e.stopPropagation(); isAdmin && updateRating(task.id, num); }}
+                             disabled={!isAdmin}
+                             className={`w-5 h-5 flex items-center justify-center border ${ratings[task.id] === num ? 'border-accent text-accent' : 'border-current opacity-50 hover:opacity-100'} ${!isAdmin ? 'cursor-default' : ''}`}
                            >
                              {num}
                            </button>
@@ -371,9 +375,10 @@ const LearningPlan = ({
                        <input
                          type="text"
                          value={notes[task.id] || ''}
-                         onChange={(e) => updateNote(task.id, e.target.value)}
-                         placeholder="..."
-                         className="flex-1 bg-transparent border-b border-current opacity-50 focus:opacity-100 outline-none px-1 py-0.5 placeholder:text-current placeholder:opacity-30"
+                         onChange={(e) => isAdmin && updateNote(task.id, e.target.value)}
+                         disabled={!isAdmin}
+                         placeholder={isAdmin ? "..." : ""}
+                         className="flex-1 bg-transparent border-b border-current opacity-50 focus:opacity-100 outline-none px-1 py-0.5 placeholder:text-current placeholder:opacity-30 disabled:cursor-default"
                        />
                      </div>
                    </div>
@@ -407,7 +412,7 @@ const LearningPlan = ({
             key={task.id} 
             className="flex flex-col gap-2 group"
           >
-            <div className="flex items-start gap-4 cursor-pointer" onClick={() => toggleTask(task.id)}>
+            <div className={`flex items-start gap-4 ${isAdmin ? 'cursor-pointer' : 'cursor-default'}`} onClick={() => isAdmin && toggleTask(task.id)}>
               <div className="mt-1 text-accent">
                 {completed[task.id] ? '[x]' : '[ ]'}
               </div>
@@ -426,8 +431,9 @@ const LearningPlan = ({
                   {[1, 2, 3, 4, 5].map(num => (
                     <button
                       key={num}
-                      onClick={(e) => { e.stopPropagation(); updateRating(task.id, num); }}
-                      className={`w-5 h-5 flex items-center justify-center border ${ratings[task.id] === num ? 'border-accent text-accent' : 'border-current hover:opacity-80'}`}
+                      onClick={(e) => { e.stopPropagation(); isAdmin && updateRating(task.id, num); }}
+                      disabled={!isAdmin}
+                      className={`w-5 h-5 flex items-center justify-center border ${ratings[task.id] === num ? 'border-accent text-accent' : 'border-current hover:opacity-80'} ${!isAdmin && 'cursor-default'}`}
                     >
                       {num}
                     </button>
@@ -439,9 +445,10 @@ const LearningPlan = ({
                 <input
                   type="text"
                   value={notes[task.id] || ''}
-                  onChange={(e) => updateNote(task.id, e.target.value)}
-                  placeholder="..."
-                  className="flex-1 bg-transparent border-b border-current outline-none px-1 py-0.5 placeholder:text-current placeholder:opacity-30"
+                  onChange={(e) => isAdmin && updateNote(task.id, e.target.value)}
+                  disabled={!isAdmin}
+                  placeholder={isAdmin ? "..." : ""}
+                  className="flex-1 bg-transparent border-b border-current outline-none px-1 py-0.5 placeholder:text-current placeholder:opacity-30 disabled:cursor-default"
                 />
               </div>
             </div>
@@ -704,37 +711,71 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
+  // Firestore Data Sync
   useEffect(() => {
-    const savedPlan = localStorage.getItem('learningOS_plan');
-    if (savedPlan) {
-      try { setCompleted(JSON.parse(savedPlan)); } catch (e) {}
+    const docRef = doc(db, 'progress', 'akmal');
+
+    if (isAdmin) {
+      // Admin: Real-time sync
+      const unsubscribe = onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setCompleted(data.completed || {});
+          setRatings(data.ratings || {});
+          setNotes(data.notes || {});
+        }
+      }, (error) => {
+        console.error("Firestore sync error:", error);
+      });
+      return () => unsubscribe();
+    } else {
+      // Public: One-time fetch
+      getDoc(docRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setCompleted(data.completed || {});
+          setRatings(data.ratings || {});
+          setNotes(data.notes || {});
+        }
+      }).catch(error => {
+        console.error("Firestore fetch error:", error);
+      });
     }
-    const savedRatings = localStorage.getItem('learningOS_ratings');
-    if (savedRatings) {
-      try { setRatings(JSON.parse(savedRatings)); } catch (e) {}
+  }, [isAdmin]);
+
+  const saveToFirestore = async (newCompleted: Record<string, boolean>, newRatings: Record<string, number>, newNotes: Record<string, string>) => {
+    if (!isAdmin) return;
+    try {
+      await setDoc(doc(db, 'progress', 'akmal'), {
+        completed: newCompleted,
+        ratings: newRatings,
+        notes: newNotes,
+        lastUpdated: new Date().toISOString()
+      }, { merge: true });
+    } catch (error) {
+      console.error("Error saving to Firestore:", error);
     }
-    const savedNotes = localStorage.getItem('learningOS_notes');
-    if (savedNotes) {
-      try { setNotes(JSON.parse(savedNotes)); } catch (e) {}
-    }
-  }, []);
+  };
 
   const toggleTask = (id: string) => {
+    if (!isAdmin) return; // Only admin can edit
     const next = { ...completed, [id]: !completed[id] };
     setCompleted(next);
-    localStorage.setItem('learningOS_plan', JSON.stringify(next));
+    saveToFirestore(next, ratings, notes);
   };
 
   const updateRating = (id: string, rating: number) => {
+    if (!isAdmin) return; // Only admin can edit
     const next = { ...ratings, [id]: rating };
     setRatings(next);
-    localStorage.setItem('learningOS_ratings', JSON.stringify(next));
+    saveToFirestore(completed, next, notes);
   };
 
   const updateNote = (id: string, note: string) => {
+    if (!isAdmin) return; // Only admin can edit
     const next = { ...notes, [id]: note };
     setNotes(next);
-    localStorage.setItem('learningOS_notes', JSON.stringify(next));
+    saveToFirestore(completed, ratings, next);
   };
 
   const t = content[lang].nav;
@@ -757,7 +798,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home': return <Home lang={lang} setCurrentPage={setCurrentPage} />;
-      case 'plan': return <LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} />;
+      case 'plan': return <LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} />;
       case 'skills': return <Skills lang={lang} />;
       case 'progress': return <Progress lang={lang} completed={completed} planData={planData} />;
       case 'works': return <Works lang={lang} />;
