@@ -36,5 +36,13 @@ service cloud.firestore {
       allow create, update: if isAdmin() && isValidProgress();
       allow delete: if false;
     }
+
+    match /content/{docId} {
+      // PUBLIC READ: Любой может читать контент сайта (историю, план)
+      allow read: if true;
+      
+      // ADMIN WRITE: Только админ может редактировать контент
+      allow create, update, delete: if isAdmin();
+    }
   }
 }

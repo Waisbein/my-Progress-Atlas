@@ -534,6 +534,50 @@ interface Message {
 
 const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdmin: boolean }) => {
   const t = content[lang].console;
+  
+  // Script purely for database migration
+  const runMigration = async () => {
+    try {
+      setMessages(prev => [...prev, { role: 'assistant', text: 'Initializing cloud migration...' }]);
+      
+      const historyData = content.en.history.items.map((item, i) => {
+        const ruItem = content.ru.history.items[i];
+        return {
+          id: item.id,
+          date: item.date,
+          status: item.status,
+          en: { title: item.title, desc: item.desc },
+          ru: { title: ruItem.title, desc: ruItem.desc }
+        };
+      });
+
+      const planData = content.en.plan.weeks.map((week, i) => {
+        const ruWeek = content.ru.plan.weeks[i];
+        return {
+          id: `week_${i}`,
+          en: { title: week.title, objective: week.objective || '' },
+          ru: { title: ruWeek.title, objective: ruWeek.objective || '' },
+          tasks: week.tasks.map((task, j) => {
+            const ruTask = ruWeek.tasks[j];
+            return {
+              id: task.id,
+              day: task.day,
+              ref: task.ref || null,
+              en: { text: task.text },
+              ru: { text: ruTask.text }
+            };
+          })
+        };
+      });
+
+      await setDoc(doc(db, 'content', 'history'), { versions: historyData });
+      await setDoc(doc(db, 'content', 'learning_plan'), { weeks: planData });
+
+      setMessages(prev => [...prev, { role: 'assistant', text: 'MIGRATION COMPLETE. Data synced to Firestore /content collection.' }]);
+    } catch (e: any) {
+      setMessages(prev => [...prev, { role: 'assistant', text: `MIGRATION FAILED: ${e.message}` }]);
+    }
+  };
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', text: t.welcome }
   ]);
@@ -568,6 +612,16 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
     if (userMsg.toLowerCase() === 'exit' && user) {
       await signOut(auth);
       setMessages(prev => [...prev, { role: 'assistant', text: 'Session terminated. Returned to public mode.' }]);
+      setIsLoading(false);
+      return;
+    }
+
+    if (userMsg.toLowerCase() === 'migrate') {
+      if (isAdmin) {
+        runMigration();
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', text: 'ACCESS DENIED. Admin privilege required.' }]);
+      }
       setIsLoading(false);
       return;
     }
