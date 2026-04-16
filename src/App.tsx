@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, ArrowRight, Activity, Database, Folder, Mail, Cpu, ChevronRight, History, ListChecks, Globe } from 'lucide-react';
+import { Terminal, ArrowRight, Activity, Database, Folder, Mail, Cpu, ChevronRight, History, ListChecks, Globe, Edit2, Plus, X, Save, Trash2 } from 'lucide-react';
 import { content, Lang } from './translations';
 import { GoogleGenAI } from '@google/genai';
 import { auth } from './firebase';
@@ -254,7 +254,7 @@ const Works = ({ lang }: { lang: Lang }) => {
 // --- LAYOUT ---
 
 const LearningPlan = ({ 
-  lang, completed, toggleTask, planData, ratings, updateRating, notes, updateNote, isAdmin 
+  lang, completed, toggleTask, planData, ratings, updateRating, notes, updateNote, isAdmin, rawPlanData, savePlanToFirestore 
 }: { 
   lang: Lang, 
   completed: Record<string, boolean>, 
@@ -264,10 +264,20 @@ const LearningPlan = ({
   updateRating: (id: string, rating: number) => void,
   notes: Record<string, string>,
   updateNote: (id: string, note: string) => void,
-  isAdmin: boolean
+  isAdmin: boolean,
+  rawPlanData?: any[] | null,
+  savePlanToFirestore?: (d: any[]) => void
 }) => {
   const t = content[lang].plan;
   const [viewMode, setViewMode] = useState<'main' | 'bg'>('main');
+
+  // Edit State
+  const [editingWeek, setEditingWeek] = useState<number | null>(null); // index of week to edit
+  const [editingTask, setEditingTask] = useState<{wIndex: number, tIndex: number} | null>(null);
+  
+  // Data State for Editors
+  const [wForm, setWForm] = useState({ enTitle: '', ruTitle: '', enObj: '', ruObj: '' });
+  const [tForm, setTForm] = useState({ id: '', day: '', ref: '', enText: '', ruText: '' });
 
   // Main Thread progress
   const mainTotalTasks = planData.reduce((acc, w) => acc + w.tasks.length, 0);
@@ -284,6 +294,56 @@ const LearningPlan = ({
     return `[${'█'.repeat(filled)}${'░'.repeat(length - filled)}]`;
   };
 
+  const openEditWeek = (wIndex: number) => {
+    if (!rawPlanData) return;
+    const w = rawPlanData[wIndex];
+    setWForm({
+      enTitle: w.en?.title || '', ruTitle: w.ru?.title || '',
+      enObj: w.en?.objective || '', ruObj: w.ru?.objective || ''
+    });
+    setEditingWeek(wIndex);
+  };
+  
+  const saveWeek = () => {
+    if (!rawPlanData || editingWeek === null || !savePlanToFirestore) return;
+    const newData = [...rawPlanData];
+    newData[editingWeek] = {
+      ...newData[editingWeek],
+      en: { ...newData[editingWeek].en, title: wForm.enTitle, objective: wForm.enObj },
+      ru: { ...newData[editingWeek].ru, title: wForm.ruTitle, objective: wForm.ruObj }
+    };
+    savePlanToFirestore(newData);
+    setEditingWeek(null);
+  }
+
+  const openEditTask = (wIndex: number, tIndex: number) => {
+    if (!rawPlanData) return;
+    const t = rawPlanData[wIndex].tasks[tIndex];
+    setTForm({
+      id: t.id || '', day: t.day || '', ref: t.ref || '',
+      enText: t.en?.text || '', ruText: t.ru?.text || ''
+    });
+    setEditingTask({ wIndex, tIndex });
+  };
+  
+  const saveTask = () => {
+    if (!rawPlanData || editingTask === null || !savePlanToFirestore) return;
+    const { wIndex, tIndex } = editingTask;
+    const newData = [...rawPlanData];
+    
+    const newTasks = [...newData[wIndex].tasks];
+    newTasks[tIndex] = {
+      ...newTasks[tIndex],
+      id: tForm.id, day: tForm.day, ref: tForm.ref,
+      en: { text: tForm.enText },
+      ru: { text: tForm.ruText }
+    };
+    
+    newData[wIndex] = { ...newData[wIndex], tasks: newTasks };
+    savePlanToFirestore(newData);
+    setEditingTask(null);
+  }
+
   const renderMainThread = () => (
     <div className="space-y-12">
       {/* Overall Progress */}
@@ -297,17 +357,25 @@ const LearningPlan = ({
          </div>
       </div>
 
-      {planData.map(week => {
+      {planData.map((week, wIndex) => {
          const weekTotal = week.tasks.length;
          const weekCompleted = week.tasks.filter((task: any) => completed[task.id]).length;
          const weekPercent = Math.round((weekCompleted / weekTotal) * 100) || 0;
 
          return (
-           <div key={week.week} className="border border-ink">
+           <div key={week.week} className="border border-ink relative group/week">
              <div className="border-b border-ink p-4 bg-ink/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <div className="font-mono text-xs text-ink-muted uppercase mb-1">{t.week} {week.week}</div>
+                 <div className="font-mono text-xs text-ink-muted uppercase mb-1 flex items-center gap-2">
+                   {t.week} {week.week}
+                   {isAdmin && (
+                     <button onClick={() => openEditWeek(wIndex)} className="text-accent underline hover:opacity-75">
+                       [EDIT WEEK]
+                     </button>
+                   )}
+                 </div>
                  <h3 className="font-display text-xl uppercase tracking-tight">{week.title}</h3>
+                 {week.objective && <p className="font-body text-sm mt-1 text-ink-muted">{week.objective}</p>}
                </div>
                <div className="font-mono text-sm text-accent text-left md:text-right">
                  <div className="hidden md:block">{getAsciiBar(weekPercent, 10)} {weekPercent}%</div>
@@ -316,10 +384,10 @@ const LearningPlan = ({
              </div>
              
              <div className="divide-y divide-ink">
-               {week.tasks.map((task: any) => (
+               {week.tasks.map((task: any, tIndex: number) => (
                  <div 
                    key={task.id} 
-                   className="p-4 flex flex-col gap-3 hover:bg-ink hover:text-paper transition-none group"
+                   className="p-4 flex flex-col gap-3 hover:bg-ink hover:text-paper transition-none group relative"
                  >
                    <div className={`flex flex-col md:flex-row md:items-center gap-4 ${isAdmin ? 'cursor-pointer' : 'cursor-default'}`} onClick={() => isAdmin && toggleTask(task.id)}>
                      <div className="flex items-center gap-4 flex-1">
@@ -332,6 +400,14 @@ const LearningPlan = ({
                        <div className={`font-body text-base ${completed[task.id] ? 'line-through opacity-50' : ''}`}>
                          {task.text}
                        </div>
+                       {isAdmin && (
+                           <button 
+                             onClick={(e) => { e.stopPropagation(); openEditTask(wIndex, tIndex); }} 
+                             className="opacity-0 group-hover:opacity-100 uppercase text-[10px] bg-paper text-ink px-2 py-1 border border-ink hover:bg-accent hover:border-accent hover:text-paper"
+                           >
+                             [EDIT TASK]
+                           </button>
+                       )}
                      </div>
                      {task.url ? (
                        <a 
@@ -459,9 +535,49 @@ const LearningPlan = ({
   );
 
   return (
-    <div className="animate-in fade-in duration-0">
+    <div className="animate-in fade-in duration-0 relative">
       <PageHeader title={t.title} metadata={t.meta} />
       
+      {/* Modals overlay */}
+      {isAdmin && editingWeek !== null && (
+        <div className="fixed inset-0 bg-ink/80 z-[100] flex items-center justify-center p-4">
+          <div className="bg-paper text-ink p-6 border-2 border-accent max-w-2xl w-full">
+            <h3 className="font-display text-xl uppercase mb-4 text-accent">Edit Week</h3>
+            <div className="space-y-4 font-mono text-sm">
+              <div><label className="block mb-1 opacity-50">Title (EN)</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={wForm.enTitle} onChange={e => setWForm({...wForm, enTitle: e.target.value})} /></div>
+              <div><label className="block mb-1 opacity-50">Title (RU)</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={wForm.ruTitle} onChange={e => setWForm({...wForm, ruTitle: e.target.value})} /></div>
+              <div><label className="block mb-1 opacity-50">Objective (EN)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none" value={wForm.enObj} onChange={e => setWForm({...wForm, enObj: e.target.value})} /></div>
+              <div><label className="block mb-1 opacity-50">Objective (RU)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none" value={wForm.ruObj} onChange={e => setWForm({...wForm, ruObj: e.target.value})} /></div>
+            </div>
+            <div className="mt-6 flex justify-end gap-4">
+              <button onClick={() => setEditingWeek(null)} className="px-4 py-2 border border-ink hover:bg-ink hover:text-paper uppercase text-sm">Cancel</button>
+              <button onClick={saveWeek} className="px-4 py-2 border border-accent bg-accent text-paper hover:bg-transparent hover:text-accent uppercase text-sm">Save</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isAdmin && editingTask !== null && (
+        <div className="fixed inset-0 bg-ink/80 z-[100] flex items-center justify-center p-4">
+          <div className="bg-paper text-ink p-6 border-2 border-accent max-w-2xl w-full">
+            <h3 className="font-display text-xl uppercase mb-4 text-accent">Edit Task</h3>
+            <div className="space-y-4 font-mono text-sm">
+              <div className="flex gap-4">
+                <div className="flex-1"><label className="block mb-1 opacity-50">ID</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.id} onChange={e => setTForm({...tForm, id: e.target.value})} /></div>
+                <div className="flex-1"><label className="block mb-1 opacity-50">Day</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.day} onChange={e => setTForm({...tForm, day: e.target.value})} /></div>
+              </div>
+              <div><label className="block mb-1 opacity-50">Ref URL (optional)</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.ref} onChange={e => setTForm({...tForm, ref: e.target.value})} /></div>
+              <div><label className="block mb-1 opacity-50">Text (EN)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.enText} onChange={e => setTForm({...tForm, enText: e.target.value})} /></div>
+              <div><label className="block mb-1 opacity-50">Text (RU)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.ruText} onChange={e => setTForm({...tForm, ruText: e.target.value})} /></div>
+            </div>
+            <div className="mt-6 flex justify-end gap-4">
+              <button onClick={() => setEditingTask(null)} className="px-4 py-2 border border-ink hover:bg-ink hover:text-paper uppercase text-sm">Cancel</button>
+              <button onClick={saveTask} className="px-4 py-2 border border-accent bg-accent text-paper hover:bg-transparent hover:text-accent uppercase text-sm">Save</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Thread Switcher */}
       <div className="flex flex-col md:flex-row gap-2 mb-8 font-mono text-xs md:text-sm">
         <button 
@@ -750,6 +866,7 @@ export default function App() {
   const [now, setNow] = useState(new Date());
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [rawPlanData, setRawPlanData] = useState<any[] | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -767,11 +884,20 @@ export default function App() {
 
   // Firestore Data Sync
   useEffect(() => {
+    // Sync Content (Learning Plan) for everyone (real-time is better)
+    const planRef = doc(db, 'content', 'learning_plan');
+    const unsubPlan = onSnapshot(planRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setRawPlanData(docSnap.data().weeks || null);
+      }
+    });
+
     const docRef = doc(db, 'progress', 'akmal');
+    let unsubProgress: any = null;
 
     if (isAdmin) {
-      // Admin: Real-time sync
-      const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      // Admin: Real-time sync for progress
+      unsubProgress = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
           setCompleted(data.completed || {});
@@ -781,9 +907,8 @@ export default function App() {
       }, (error) => {
         console.error("Firestore sync error:", error);
       });
-      return () => unsubscribe();
     } else {
-      // Public: One-time fetch
+      // Public: One-time fetch for progress
       getDoc(docRef).then((docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -795,6 +920,11 @@ export default function App() {
         console.error("Firestore fetch error:", error);
       });
     }
+
+    return () => {
+      unsubPlan();
+      if (unsubProgress) unsubProgress();
+    };
   }, [isAdmin]);
 
   const saveToFirestore = async (newCompleted: Record<string, boolean>, newRatings: Record<string, number>, newNotes: Record<string, string>) => {
@@ -833,7 +963,29 @@ export default function App() {
   };
 
   const t = content[lang].nav;
-  const planData = content[lang].plan.weeks;
+  
+  // Transform rawPlanData to localized format if available, else fallback to hardcoded
+  const planData = rawPlanData ? rawPlanData.map(w => ({
+    week: w.id.replace('week_', ''),
+    title: w[lang]?.title || '',
+    objective: w[lang]?.objective || '',
+    tasks: w.tasks.map((t: any) => ({
+      id: t.id,
+      day: t.day,
+      ref: t.ref,
+      text: t[lang]?.text || ''
+    }))
+  })) : content[lang].plan.weeks;
+
+  // Add functionality to save edited plan back to Firestore
+  const savePlanToFirestore = async (updatedRawPlan: any[]) => {
+    if (!isAdmin) return;
+    try {
+      await setDoc(doc(db, 'content', 'learning_plan'), { weeks: updatedRawPlan }, { merge: true });
+    } catch (error) {
+      console.error("Error saving plan:", error);
+    }
+  };
 
   const startDate = new Date('2026-03-30T00:00:00');
   const diffTime = Math.abs(now.getTime() - startDate.getTime());
@@ -852,7 +1004,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home': return <Home lang={lang} setCurrentPage={setCurrentPage} />;
-      case 'plan': return <LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} />;
+      case 'plan': return <LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} rawPlanData={rawPlanData} savePlanToFirestore={savePlanToFirestore} />;
       case 'skills': return <Skills lang={lang} />;
       case 'progress': return <Progress lang={lang} completed={completed} planData={planData} />;
       case 'works': return <Works lang={lang} />;
