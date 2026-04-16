@@ -4,69 +4,37 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     // ===============================================================
-    // Assumed Data Model
-    // ===============================================================
-    //
-    // Collection: progress
-    // Document ID: {userId} (The UID of the user)
-    // Fields:
-    //   - completed: list of strings (task IDs)
-    //   - ratings: map of numbers (task ID -> rating 1-5)
-    //   - notes: map of strings (task ID -> note text, max 2000 chars)
-    //   - ownerId: string (must match document ID and auth.uid)
-    //   - updatedAt: timestamp
-    //
-    // ===============================================================
-
-    // ===============================================================
     // Helper Functions
     // ===============================================================
     
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-
-    function hasRequiredFields() {
-      return request.resource.data.keys().hasAll(['completed', 'ratings', 'notes', 'ownerId']);
+    function isAdmin() {
+      // Разрешаем доступ только конкретному email
+      return request.auth != null && request.auth.token.email == 'genialnee@gmail.com';
     }
 
     function isValidProgress() {
       let data = request.resource.data;
       
-      // Basic type checks
-      let validTypes = data.completed is list && 
-                       data.ratings is map && 
-                       data.notes is map && 
-                       data.ownerId is string;
+      // Проверяем типы данных (все они - объекты/словари)
+      let validTypes = (!('completed' in data) || data.completed is map) && 
+                       (!('ratings' in data) || data.ratings is map) && 
+                       (!('notes' in data) || data.notes is map) &&
+                       (!('lastUpdated' in data) || data.lastUpdated is string);
                        
-      // Owner ID must match the document ID
-      let validOwner = data.ownerId == request.auth.uid;
-      
-      // Size limits to prevent DoS/Resource Exhaustion
-      // Max 1000 completed tasks, max 1000 ratings, max 1000 notes
-      let validSizes = data.completed.size() <= 1000 &&
-                       data.ratings.size() <= 1000 &&
-                       data.notes.size() <= 1000;
-                       
-      return validTypes && validOwner && validSizes;
+      return validTypes;
     }
 
     // ===============================================================
     // Rules
     // ===============================================================
 
-    match /progress/{userId} {
-      // PUBLIC READ: Anyone can read the progress (Live Portfolio)
+    match /progress/{docId} {
+      // PUBLIC READ: Любой может смотреть прогресс
       allow read: if true;
       
-      // ADMIN WRITE: Only the owner can create or update their own document
-      allow create: if isOwner(userId) && hasRequiredFields() && isValidProgress();
-      allow update: if isOwner(userId) && hasRequiredFields() && isValidProgress();
-      allow delete: if false; // Progress should not be deleted
+      // ADMIN WRITE: Только админ может сохранять изменения
+      allow create, update: if isAdmin() && isValidProgress();
+      allow delete: if false;
     }
   }
 }
