@@ -64,10 +64,12 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
               <div className="relative group cursor-crosshair">
                 {/* Photo placeholder with ASCII easter egg on hover */}
                 <div className="w-32 h-32 border-2 border-ink overflow-hidden grayscale bg-ink flex items-center justify-center relative">
-                  <div 
-                    className="absolute inset-0 bg-cover mix-blend-screen opacity-80 group-hover:opacity-0 transition-opacity"
-                    style={{ backgroundImage: `url(${loadedAvatar})` }}
-                  ></div>
+                  <img 
+                    src={loadedAvatar} 
+                    alt="Operator Avatar" 
+                    className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-80 group-hover:opacity-0 transition-opacity"
+                    referrerPolicy="no-referrer"
+                  />
                   <div className="absolute inset-0 hidden group-hover:flex items-center justify-center font-mono text-[6px] leading-[4px] text-accent p-1 opacity-80 overflow-hidden text-center scale-150">
                     {'01010010101001\n01100110101010\n1010AKMAL10101\n0101ACT1001101\n11111100001010\n10100101001010'}
                   </div>
