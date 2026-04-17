@@ -49,7 +49,7 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
   }, []);
 
   // Use either custom avatar or the standard dev placeholder
-  const loadedAvatar = "/avatar.jpg";
+  const loadedAvatar = "/avatar.webp";
 
   return (
     <div className="animate-in fade-in duration-0">
