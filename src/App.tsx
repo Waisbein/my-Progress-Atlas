@@ -40,11 +40,11 @@ const Tag = ({ children, active }: { children: React.ReactNode; active?: boolean
 
 const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: string) => void }) => {
   const t = content[lang].home;
-  const [time, setTime] = useState(new Date().toISOString());
+  const [time, setTime] = useState(new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Tashkent' }));
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date().toISOString()), 1000);
+    const timer = setInterval(() => setTime(new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Tashkent' })), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -138,7 +138,7 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
             </li>
             <li className="flex justify-between border-b border-ink/20 pb-2">
               <span>{t.localTime}</span>
-              <span className="text-accent">{time.split('T')[1].split('.')[0]}</span>
+              <span className="text-accent">{time}</span>
             </li>
             <li className="flex justify-between border-b border-ink/20 pb-2">
               <span>{t.osVersion}</span>
