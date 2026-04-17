@@ -49,7 +49,7 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
   }, []);
 
   // Use either custom avatar or the standard dev placeholder
-  const loadedAvatar = "/my_photo.jpg";
+  const loadedAvatar = "https://i.ibb.co/0jyFNp6w/my-photo.jpg";
 
   return (
     <div className="animate-in fade-in duration-0">
