@@ -76,7 +76,7 @@ export const content = {
             { id: 'd4', day: 4, text: "[STUDY] Learn client-server flow and request lifecycle", url: 'https://notebooklm.google.com/notebook/7f79d3ee-94e4-418a-929e-38fafeb20902?authuser=1' },
             { id: 'd5', day: 5, text: "[STUDY] Map UI -> request -> server -> DB -> response -> UI", url: 'https://notebooklm.google.com/notebook/5daa2630-0874-46ab-9c30-5661de121290?authuser=1' },
             { id: 'd6', day: 6, text: "[BUILD] Set up learning plan tracking structure" },
-            { id: 'd7', day: 7, text: "[REVIEW] Write week-one architecture note", note: "Architecture is the art of structuring complexity. This week I learned that client-server flow isn't just about API calls, it's about defining the source of truth and minimizing latency at the mental model level." },
+            { id: 'd7', day: 7, text: "[REVIEW] Write week-one architecture note", artifact: "Architecture is the art of structuring complexity.\n\nThis week I learned that client-server flow isn't just about API calls, it's about defining the source of truth and minimizing latency at the mental model level.\n\nKey takeaways:\n1. The UI is just a projection of state.\n2. The server is the authoritative state manager.\n3. The database is the persistent memory.\n\nWhen we build, we are just managing data through time and space." },
           ]
         },
         {
@@ -265,7 +265,7 @@ export const content = {
             { id: 'd4', day: 4, text: "[STUDY] Изучить client-server flow и lifecycle запроса", url: 'https://notebooklm.google.com/notebook/7f79d3ee-94e4-418a-929e-38fafeb20902?authuser=1' },
             { id: 'd5', day: 5, text: "[STUDY] Разобрать цепочку UI -> request -> server -> DB -> response -> UI", url: 'https://notebooklm.google.com/notebook/5daa2630-0874-46ab-9c30-5661de121290?authuser=1' },
             { id: 'd6', day: 6, text: "[BUILD] Настроить структуру трекинга учебного плана" },
-            { id: 'd7', day: 7, text: "[REVIEW] Написать архитектурную заметку по первой неделе" },
+            { id: 'd7', day: 7, text: "[REVIEW] Написать архитектурную заметку по первой неделе", artifact: "Архитектура — это искусство структурирования сложности.\n\nНа этой неделе я понял, что client-server flow (клиент-серверное взаимодействие) — это не просто вызовы API, это определение источника истины и минимизация задержки на ментальном уровне.\n\nКлючевые выводы:\n1. UI — это просто проекция состояния (state).\n2. Сервер — это авторитетный менеджер состояния.\n3. База данных — это постоянная память.\n\nКогда мы пишем код, мы просто управляем данными в пространстве и времени." },
           ]
         },
         {

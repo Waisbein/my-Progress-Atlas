@@ -336,7 +336,8 @@ const LearningPlan = ({
   
   // Data State for Editors
   const [wForm, setWForm] = useState({ enTitle: '', ruTitle: '', enObj: '', ruObj: '' });
-  const [tForm, setTForm] = useState({ id: '', day: '', ref: '', enText: '', ruText: '' });
+  const [tForm, setTForm] = useState({ id: '', day: '', ref: '', enText: '', ruText: '', enArtifact: '', ruArtifact: '' });
+  const [activeArtifact, setActiveArtifact] = useState<{title: string, content: string} | null>(null);
 
   // Main Thread progress
   const mainTotalTasks = planData.reduce((acc, w) => acc + w.tasks.length, 0);
@@ -380,7 +381,8 @@ const LearningPlan = ({
     const t = rawPlanData[wIndex].tasks[tIndex];
     setTForm({
       id: t.id || '', day: t.day || '', ref: t.ref || '',
-      enText: t.en?.text || '', ruText: t.ru?.text || ''
+      enText: t.en?.text || '', ruText: t.ru?.text || '',
+      enArtifact: t.en?.artifact || '', ruArtifact: t.ru?.artifact || ''
     });
     setEditingTask({ wIndex, tIndex });
   };
@@ -394,8 +396,8 @@ const LearningPlan = ({
     newTasks[tIndex] = {
       ...newTasks[tIndex],
       id: tForm.id, day: tForm.day, ref: tForm.ref,
-      en: { text: tForm.enText },
-      ru: { text: tForm.ruText }
+      en: { text: tForm.enText, artifact: tForm.enArtifact },
+      ru: { text: tForm.ruText, artifact: tForm.ruArtifact }
     };
     
     newData[wIndex] = { ...newData[wIndex], tasks: newTasks };
@@ -623,7 +625,7 @@ const LearningPlan = ({
 
       {isAdmin && editingTask !== null && (
         <div className="fixed inset-0 bg-ink/80 z-[100] flex items-center justify-center p-4">
-          <div className="bg-paper text-ink p-6 border-2 border-accent max-w-2xl w-full">
+          <div className="bg-paper text-ink p-6 border-2 border-accent max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <h3 className="font-display text-xl uppercase mb-4 text-accent">Edit Task</h3>
             <div className="space-y-4 font-mono text-sm">
               <div className="flex gap-4">
@@ -633,10 +635,33 @@ const LearningPlan = ({
               <div><label className="block mb-1 opacity-50">Ref URL (optional)</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.ref} onChange={e => setTForm({...tForm, ref: e.target.value})} /></div>
               <div><label className="block mb-1 opacity-50">Text (EN)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.enText} onChange={e => setTForm({...tForm, enText: e.target.value})} /></div>
               <div><label className="block mb-1 opacity-50">Text (RU)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.ruText} onChange={e => setTForm({...tForm, ruText: e.target.value})} /></div>
+              <div><label className="block mb-1 text-accent opacity-80">Artifact (EN) (Optional markdown/text)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none min-h-[100px]" value={tForm.enArtifact} onChange={e => setTForm({...tForm, enArtifact: e.target.value})} /></div>
+              <div><label className="block mb-1 text-accent opacity-80">Artifact (RU) (Optional markdown/text)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none min-h-[100px]" value={tForm.ruArtifact} onChange={e => setTForm({...tForm, ruArtifact: e.target.value})} /></div>
             </div>
             <div className="mt-6 flex justify-end gap-4">
               <button onClick={() => setEditingTask(null)} className="px-4 py-2 border border-ink hover:bg-ink hover:text-paper uppercase text-sm">Cancel</button>
               <button onClick={saveTask} className="px-4 py-2 border border-accent bg-accent text-paper hover:bg-transparent hover:text-accent uppercase text-sm">Save</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Artifact Overlay */}
+      {activeArtifact && (
+        <div className="fixed inset-0 z-[120] bg-ink/90 backdrop-blur-sm p-4 md:p-12 flex flex-col items-center justify-center animate-in fade-in">
+          <div className="w-full max-w-4xl max-h-full border border-accent bg-paper flex flex-col shadow-[0_0_40px_rgba(var(--accent-color),0.2)] relative">
+            <div className="border-b border-accent bg-accent text-paper px-4 py-2 flex justify-between items-center font-mono text-xs uppercase">
+              <span>TERMINAL // ARTIFACT VIEWER</span>
+              <button onClick={() => setActiveArtifact(null)} className="hover:text-ink transition-colors px-2"> [CLOSE] </button>
+            </div>
+            <div className="p-6 md:p-10 overflow-y-auto font-mono text-sm leading-relaxed whitespace-pre-wrap text-ink bg-paper bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSIyIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDIpIiAvPgo8L3N2Zz4=')]">
+              <div className="text-accent mb-8 border-b border-ink/10 pb-4 flex flex-col gap-2">
+                <span className="opacity-50 text-xs">FILE MATCH:</span>
+                <span className="text-lg md:text-xl">{activeArtifact.title}</span>
+              </div>
+              <div className="prose prose-invert max-w-none text-ink">
+                {activeArtifact.content}
+              </div>
             </div>
           </div>
         </div>
