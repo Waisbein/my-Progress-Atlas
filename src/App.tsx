@@ -98,7 +98,7 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
                       <span>{t.links.github}</span>
                       <span className="opacity-30 group-hover:opacity-100">{'->'}</span>
                     </a>
-                    <a href="https://t.me/kh_a87" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
+                    <a href="https://t.me/waisbein" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
                       <span>{t.links.telegram}</span>
                       <span className="opacity-30 group-hover:opacity-100">{'->'}</span>
                     </a>
