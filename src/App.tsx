@@ -995,7 +995,21 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
         {/* Header */}
         <div className="flex justify-between items-center pb-4 border-b border-accent/30 mb-6">
           <span className="uppercase tracking-widest">{t.title}</span>
-          <div className="w-3 h-3 bg-accent"></div>
+          <div className="flex items-center gap-4">
+            {user && (
+              <button 
+                onClick={async () => {
+                  await signOut(auth);
+                  setMessages(prev => [...prev, { role: 'assistant', text: 'Session terminated manually. Returned to public mode.' }]);
+                }}
+                className="text-xs border border-accent px-2 py-0.5 hover:bg-accent hover:text-ink transition-colors"
+                title="Disconnect / Logout"
+              >
+                LOGOUT
+              </button>
+            )}
+            <div className="w-3 h-3 bg-accent"></div>
+          </div>
         </div>
         
         {/* Messages */}
