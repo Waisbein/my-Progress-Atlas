@@ -575,16 +575,21 @@ const LearningPlan = ({
                   ))}
                 </div>
               </div>
-              <div className="flex items-center gap-2 flex-1">
-                <span>{t.note}:</span>
-                <input
-                  type="text"
-                  value={notes[task.id] || ''}
-                  onChange={(e) => isAdmin && updateNote(task.id, e.target.value)}
-                  disabled={!isAdmin}
-                  placeholder={isAdmin ? "..." : ""}
-                  className="flex-1 bg-transparent border-b border-current outline-none px-1 py-0.5 placeholder:text-current placeholder:opacity-30 disabled:cursor-default"
-                />
+              <div className="flex items-center gap-4 flex-1">
+                <div className="flex items-center gap-2 flex-1">
+                  <span>{t.note}:</span>
+                  <input
+                    type="text"
+                    value={notes[task.id] || ''}
+                    onChange={(e) => isAdmin && updateNote(task.id, e.target.value)}
+                    disabled={!isAdmin}
+                    placeholder={isAdmin ? "..." : ""}
+                    className="flex-1 bg-transparent border-b border-current outline-none px-1 py-0.5 placeholder:text-current placeholder:opacity-30 disabled:cursor-default"
+                  />
+                </div>
+                {(task as any).note && (
+                  <button className="text-accent underline hover:opacity-80">OPEN_ARTIFACT</button>
+                )}
               </div>
             </div>
           </div>

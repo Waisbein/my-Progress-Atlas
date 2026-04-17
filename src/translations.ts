@@ -76,7 +76,7 @@ export const content = {
             { id: 'd4', day: 4, text: "[STUDY] Learn client-server flow and request lifecycle", url: 'https://notebooklm.google.com/notebook/7f79d3ee-94e4-418a-929e-38fafeb20902?authuser=1' },
             { id: 'd5', day: 5, text: "[STUDY] Map UI -> request -> server -> DB -> response -> UI", url: 'https://notebooklm.google.com/notebook/5daa2630-0874-46ab-9c30-5661de121290?authuser=1' },
             { id: 'd6', day: 6, text: "[BUILD] Set up learning plan tracking structure" },
-            { id: 'd7', day: 7, text: "[REVIEW] Write week-one architecture note" },
+            { id: 'd7', day: 7, text: "[REVIEW] Write week-one architecture note", note: "Architecture is the art of structuring complexity. This week I learned that client-server flow isn't just about API calls, it's about defining the source of truth and minimizing latency at the mental model level." },
           ]
         },
         {
