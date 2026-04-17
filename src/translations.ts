@@ -35,8 +35,8 @@ export const content = {
       linksLabel: 'ACTIVE_CONNECTIONS',
       links: {
         github: 'TCP_PORT_80: GITHUB',
-        linkedin: 'SECURE_LINK: LINKEDIN',
-        telegram: 'DIRECT_PING: TELEGRAM'
+        telegram: 'DIRECT_PING: TELEGRAM',
+        instagram: 'SOCIAL_FEED: INSTAGRAM'
       }
     },
     plan: {
@@ -224,8 +224,8 @@ export const content = {
       linksLabel: 'ACTIVE_CONNECTIONS',
       links: {
         github: 'TCP_PORT_80: GITHUB',
-        linkedin: 'SECURE_LINK: LINKEDIN',
-        telegram: 'DIRECT_PING: TELEGRAM'
+        telegram: 'DIRECT_PING: TELEGRAM',
+        instagram: 'SOCIAL_FEED: INSTAGRAM'
       }
     },
     plan: {

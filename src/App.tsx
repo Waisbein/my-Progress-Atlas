@@ -94,16 +94,16 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
                 <div className="border-t border-ink/20 pt-4 mt-2">
                   <div className="font-mono text-xs text-ink-muted uppercase mb-3 px-1">{t.linksLabel}</div>
                   <div className="flex flex-col gap-2 font-mono text-sm w-full md:w-auto md:inline-flex">
-                    <a href="https://github.com/akmal-m" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
+                    <a href="https://github.com/Waisbein" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
                       <span>{t.links.github}</span>
                       <span className="opacity-30 group-hover:opacity-100">{'->'}</span>
                     </a>
-                    <a href="https://linkedin.com/in/akmal" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
-                      <span>{t.links.linkedin}</span>
+                    <a href="https://t.me/kh_a87" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
+                      <span>{t.links.telegram}</span>
                       <span className="opacity-30 group-hover:opacity-100">{'->'}</span>
                     </a>
-                    <a href="https://t.me/akmal" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
-                      <span>{t.links.telegram}</span>
+                    <a href="https://www.instagram.com/kml_kh16" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
+                      <span>{t.links.instagram}</span>
                       <span className="opacity-30 group-hover:opacity-100">{'->'}</span>
                     </a>
                   </div>
