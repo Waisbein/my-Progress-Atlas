@@ -41,11 +41,15 @@ const Tag = ({ children, active }: { children: React.ReactNode; active?: boolean
 const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: string) => void }) => {
   const t = content[lang].home;
   const [time, setTime] = useState(new Date().toISOString());
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date().toISOString()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Use either custom avatar or the standard dev placeholder
+  const loadedAvatar = "/avatar.jpg";
 
   return (
     <div className="animate-in fade-in duration-0">
@@ -53,6 +57,59 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2 space-y-8">
+          
+          {/* Operator ID Card */}
+          <div className="border border-ink p-6 mb-8 bg-paper">
+            <div className="flex flex-col md:flex-row gap-6 items-start">
+              <div className="relative group cursor-crosshair">
+                {/* Photo placeholder with ASCII easter egg on hover */}
+                <div className="w-32 h-32 border-2 border-ink overflow-hidden grayscale bg-ink flex items-center justify-center relative">
+                  <div 
+                    className="absolute inset-0 bg-cover mix-blend-screen opacity-80 group-hover:opacity-0 transition-opacity"
+                    style={{ backgroundImage: `url(${loadedAvatar})` }}
+                  ></div>
+                  <div className="absolute inset-0 hidden group-hover:flex items-center justify-center font-mono text-[6px] leading-[4px] text-accent p-1 opacity-80 overflow-hidden text-center scale-150">
+                    {'01010010101001\n01100110101010\n1010AKMAL10101\n0101ACT1001101\n11111100001010\n10100101001010'}
+                  </div>
+                  {/* Scanlines */}
+                  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSIyIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIiAvPgo8L3N2Zz4=')] opacity-50 pointer-events-none"></div>
+                </div>
+              </div>
+
+              <div className="flex-1 w-full relative">
+                <h2 className="font-display text-2xl md:text-4xl uppercase tracking-tight mb-2">
+                  {t.sysOp}
+                </h2>
+                
+                {/* Interactive secret log trigger */}
+                <div 
+                   className="font-mono text-sm text-accent bg-ink px-3 py-1 inline-block mb-4 cursor-pointer hover:bg-accent hover:text-ink transition-colors"
+                   onClick={() => window.alert('>> SECRET LOG 001: HR_ACCESS_GRANTED. System operational.')}
+                >
+                  {t.opStatus} <span className="animate-pulse">_</span>
+                </div>
+                
+                <div className="border-t border-ink/20 pt-4 mt-2">
+                  <div className="font-mono text-xs text-ink-muted uppercase mb-3 px-1">{t.linksLabel}</div>
+                  <div className="flex flex-col gap-2 font-mono text-sm w-full md:w-auto md:inline-flex">
+                    <a href="https://github.com/akmal-m" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
+                      <span>{t.links.github}</span>
+                      <span className="opacity-30 group-hover:opacity-100">{'->'}</span>
+                    </a>
+                    <a href="https://linkedin.com/in/akmal" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
+                      <span>{t.links.linkedin}</span>
+                      <span className="opacity-30 group-hover:opacity-100">{'->'}</span>
+                    </a>
+                    <a href="https://t.me/akmal" target="_blank" rel="noopener noreferrer" className="border border-ink px-3 py-2 hover:bg-accent hover:border-accent hover:text-paper transition-colors group flex justify-between gap-4">
+                      <span>{t.links.telegram}</span>
+                      <span className="opacity-30 group-hover:opacity-100">{'->'}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <p className="font-body text-xl md:text-2xl leading-relaxed">
             {t.p1}
           </p>

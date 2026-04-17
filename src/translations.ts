@@ -29,7 +29,15 @@ export const content = {
       osVersion: 'OS_VERSION',
       status: 'STATUS',
       online: 'ONLINE',
-      locValue: 'TASHKENT, UZ'
+      locValue: 'TASHKENT, UZ',
+      sysOp: 'SYS_OPERATOR // AKMAL',
+      opStatus: '[STATUS: COMPILING_REACT_SKILLS]',
+      linksLabel: 'ACTIVE_CONNECTIONS',
+      links: {
+        github: 'TCP_PORT_80: GITHUB',
+        linkedin: 'SECURE_LINK: LINKEDIN',
+        telegram: 'DIRECT_PING: TELEGRAM'
+      }
     },
     plan: {
       title: 'LEARNING PLAN',
@@ -210,7 +218,15 @@ export const content = {
       osVersion: 'OS_VERSION',
       status: 'STATUS',
       online: 'ONLINE',
-      locValue: 'TASHKENT, UZ'
+      locValue: 'TASHKENT, UZ',
+      sysOp: 'SYS_OPERATOR // AKMAL',
+      opStatus: '[STATUS: COMPILING_REACT_SKILLS]',
+      linksLabel: 'ACTIVE_CONNECTIONS',
+      links: {
+        github: 'TCP_PORT_80: GITHUB',
+        linkedin: 'SECURE_LINK: LINKEDIN',
+        telegram: 'DIRECT_PING: TELEGRAM'
+      }
     },
     plan: {
       title: 'ПЛАН ОБУЧЕНИЯ',
