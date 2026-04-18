@@ -38,10 +38,13 @@ const Tag = ({ children, active }: { children: React.ReactNode; active?: boolean
 
 // --- PAGES ---
 
-const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: string) => void }) => {
+const Home = ({ lang, setCurrentPage, isAdmin }: { lang: Lang, setCurrentPage: (page: string) => void, isAdmin: boolean }) => {
   const t = content[lang].home;
   const [time, setTime] = useState(new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Tashkent' }));
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [customIntro, setCustomIntro] = useState<{en: string, ru: string} | null>(null);
+  const [showIntroEditor, setShowIntroEditor] = useState(false);
+  const [introForm, setIntroForm] = useState({ en: '', ru: '' });
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Tashkent' })), 1000);
@@ -49,22 +52,53 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
   }, []);
 
   useEffect(() => {
-    // Sync temporary avatar info
+    // Sync temporary avatar and home intro info
     const unsub = onSnapshot(doc(db, 'content', 'terminal'), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
+        
+        // Avatar check
         const now = Date.now();
         if (data.tempAvatarUrl && data.tempAvatarExpiresAt && now < data.tempAvatarExpiresAt) {
           setAvatarUrl(data.tempAvatarUrl);
         } else {
-          setAvatarUrl(null); // Back to default
+          setAvatarUrl(null);
+        }
+
+        // Custom Intro check
+        if (data.intro_en && data.intro_ru) {
+          setCustomIntro({ en: data.intro_en, ru: data.intro_ru });
+        } else {
+          setCustomIntro(null);
         }
       }
     });
     return () => unsub();
   }, []);
 
+  const openIntroEditor = () => {
+    setIntroForm({
+      en: customIntro?.en || `${content.en.home.p1}\n\n${content.en.home.p2}\n\n${content.en.home.p3}`,
+      ru: customIntro?.ru || `${content.ru.home.p1}\n\n${content.ru.home.p2}\n\n${content.ru.home.p3}`
+    });
+    setShowIntroEditor(true);
+  };
+
+  const saveIntro = async () => {
+    try {
+      await setDoc(doc(db, 'content', 'terminal'), {
+        intro_en: introForm.en,
+        intro_ru: introForm.ru
+      }, { merge: true });
+      setShowIntroEditor(false);
+    } catch (e) {
+      console.error('Failed to save intro', e);
+    }
+  };
+
   const loadedAvatar = avatarUrl || "https://i.ibb.co/0jyFNp6w/my-photo.jpg";
+  const defaultIntro = [t.p1, t.p2, t.p3];
+  const displayIntro = customIntro ? customIntro[lang].split('\n').filter(p => p.trim() !== '') : defaultIntro;
 
   return (
     <div className="animate-in fade-in duration-0">
@@ -127,15 +161,23 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
             </div>
           </div>
 
-          <p className="font-body text-xl md:text-2xl leading-relaxed">
-            {t.p1}
-          </p>
-          <p className="font-body text-lg leading-relaxed text-ink/80">
-            {t.p2}
-          </p>
-          <p className="font-body text-lg leading-relaxed text-ink/80">
-            {t.p3}
-          </p>
+          <div className="relative group">
+            {isAdmin && (
+              <button 
+                onClick={openIntroEditor} 
+                className="absolute -top-6 right-0 opacity-0 group-hover:opacity-100 transition-opacity bg-accent text-ink px-2 py-1 text-xs font-mono flex items-center gap-1 z-10"
+              >
+                <Edit2 size={12} /> EDIT_TEXT
+              </button>
+            )}
+            <div className="space-y-4">
+              {displayIntro.map((p, idx) => (
+                <p key={idx} className={idx === 0 ? "font-body text-xl md:text-2xl leading-relaxed" : "font-body text-lg leading-relaxed text-ink/80"}>
+                  {p}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="border border-ink p-6 self-start">
@@ -166,6 +208,56 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
           </ul>
         </div>
       </div>
+
+      {/* Intro Editor Modal */}
+      {showIntroEditor && isAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/90 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-ink border border-accent w-full max-w-3xl max-h-[90vh] flex flex-col font-mono shadow-2xl">
+            <div className="flex items-center justify-between p-4 border-b border-accent/30">
+              <h3 className="text-accent uppercase tracking-widest flex items-center gap-2">
+                <Database size={16} /> INTRO_CONFIG
+              </h3>
+              <button onClick={() => setShowIntroEditor(false)} className="text-accent hover:opacity-70">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-4 overflow-y-auto space-y-6 text-sm flex-1">
+              <div>
+                <label className="block text-accent opacity-70 mb-2 uppercase">ENGLISH CONTENT (Use blank lines for paragraphs)</label>
+                <textarea
+                  value={introForm.en}
+                  onChange={(e) => setIntroForm({ ...introForm, en: e.target.value })}
+                  className="w-full bg-black/30 border border-accent/30 text-accent p-3 focus:outline-none focus:border-accent h-48 resize-y custom-scrollbar font-body"
+                />
+              </div>
+              <div>
+                <label className="block text-accent opacity-70 mb-2 uppercase">RUSSIAN CONTENT</label>
+                <textarea
+                  value={introForm.ru}
+                  onChange={(e) => setIntroForm({ ...introForm, ru: e.target.value })}
+                  className="w-full bg-black/30 border border-accent/30 text-accent p-3 focus:outline-none focus:border-accent h-48 resize-y custom-scrollbar font-body"
+                />
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-accent/30 flex justify-end gap-3 bg-black/20">
+              <button 
+                onClick={() => setShowIntroEditor(false)}
+                className="px-4 py-2 border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
+              >
+                CANCEL
+              </button>
+              <button 
+                onClick={saveIntro}
+                className="px-4 py-2 bg-accent text-ink hover:opacity-90 font-bold transition-opacity flex items-center gap-2"
+              >
+                <Save size={16} /> SAVE_CHANGES
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -1383,14 +1475,14 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home': return <Home lang={lang} setCurrentPage={setCurrentPage} />;
+      case 'home': return <Home lang={lang} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />;
       case 'plan': return <LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} rawPlanData={rawPlanData} savePlanToFirestore={savePlanToFirestore} />;
       case 'skills': return <Skills lang={lang} />;
       case 'progress': return <Progress lang={lang} completed={completed} planData={planData} />;
       case 'works': return <Works lang={lang} />;
       case 'console': return <Console lang={lang} user={user} isAdmin={isAdmin} />;
       case 'history': return <VersionHistory lang={lang} historyData={historyData} isAdmin={isAdmin} rawHistoryData={rawHistoryData} saveHistoryToFirestore={saveHistoryToFirestore} />;
-      default: return <Home lang={lang} setCurrentPage={setCurrentPage} />;
+      default: return <Home lang={lang} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />;
     }
   };
 
