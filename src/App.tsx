@@ -44,6 +44,11 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    const timer = setInterval(() => setTime(new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Tashkent' })), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
     // Sync temporary avatar info
     const unsub = onSnapshot(doc(db, 'content', 'terminal'), (docSnap) => {
       if (docSnap.exists()) {
