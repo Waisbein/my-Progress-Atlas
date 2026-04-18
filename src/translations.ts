@@ -127,7 +127,7 @@ export const content = {
       col2: 'BUILDING: CS FOUNDATION',
       col3: 'APPLIED: TECH STACK',
       tags: {
-        col1: ['Product Thinking', 'Proof-of-Work', 'Public Learning', 'Shipping Discipline', 'AI-Native Workflow', 'Builder Judgment'],
+        col1: ['Product Thinking', 'Proof-of-Work', 'Public Learning', 'Shipping Discipline', 'AI-Native Workflow'],
         col2: ['System Model', 'Client-Server Flow', 'HTTP / API', 'SQL / Data Modeling', 'Storage Strategy', 'Auth Model'],
         col3: ['React State', 'UI Behavior', 'Backend Basics', 'Deployment', 'Debugging', 'Local Persistence']
       }
@@ -324,7 +324,7 @@ export const content = {
       col2: 'СТРОИТСЯ: ФУНДАМЕНТ CS',
       col3: 'ПРИКЛАДНОЕ: ТЕХНОЛОГИИ',
       tags: {
-        col1: ['Product Thinking', 'Proof-of-Work', 'Public Learning', 'Shipping Discipline', 'AI-Native Workflow', 'Builder Judgment'],
+        col1: ['Product Thinking', 'Proof-of-Work', 'Public Learning', 'Shipping Discipline', 'AI-Native Workflow'],
         col2: ['Системная модель', 'Client-Server Flow', 'HTTP / API', 'SQL / Моделирование данных', 'Storage Strategy', 'Auth Model'],
         col3: ['React State', 'Поведение интерфейса', 'Backend Basics', 'Deployment', 'Debugging', 'Local Persistence']
       }
