@@ -864,14 +864,14 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
         const ruWeek = content.ru.plan.weeks[i];
         return {
           id: `week_${i}`,
-          en: { title: week.title, objective: week.objective || '' },
-          ru: { title: ruWeek.title, objective: ruWeek.objective || '' },
+          en: { title: week.title, objective: (week as any).objective || '' },
+          ru: { title: ruWeek.title, objective: (ruWeek as any).objective || '' },
           tasks: week.tasks.map((task, j) => {
             const ruTask = ruWeek.tasks[j];
             return {
               id: task.id,
               day: task.day,
-              ref: task.ref || null,
+              ref: (task as any).ref || null,
               en: { text: task.text },
               ru: { text: ruTask.text }
             };
@@ -893,6 +893,42 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [commandsData, setCommandsData] = useState<any>(null);
+  const [showEditor, setShowEditor] = useState(false);
+  const [editForm, setEditForm] = useState({
+    now: '',
+    manifesto: '',
+    lab: '',
+    stats: '',
+    whoami: ''
+  });
+
+  useEffect(() => {
+    // Subscribe to content/terminal from Firestore
+    const unsub = onSnapshot(doc(db, 'content', 'terminal'), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setCommandsData(data);
+        setEditForm({
+          now: data.now || '',
+          manifesto: data.manifesto || '',
+          lab: data.lab || '',
+          stats: data.stats || '',
+          whoami: data.whoami || ''
+        });
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  const saveCommands = async () => {
+    try {
+      await setDoc(doc(db, 'content', 'terminal'), editForm);
+      setShowEditor(false);
+    } catch (e) {
+      console.error('Failed to save commands', e);
+    }
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -947,19 +983,19 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
           responseText = (t as any).cmd_help;
           break;
         case '/now':
-          responseText = (t as any).cmd_now;
+          responseText = commandsData?.now || (t as any).cmd_now;
           break;
         case '/manifesto':
-          responseText = (t as any).cmd_manifesto;
+          responseText = commandsData?.manifesto || (t as any).cmd_manifesto;
           break;
         case '/lab':
-          responseText = (t as any).cmd_lab;
+          responseText = commandsData?.lab || (t as any).cmd_lab;
           break;
         case '/stats':
-          responseText = (t as any).cmd_stats;
+          responseText = commandsData?.stats || (t as any).cmd_stats;
           break;
         case '/whoami':
-          responseText = (t as any).cmd_whoami;
+          responseText = commandsData?.whoami || (t as any).cmd_whoami;
           break;
         default:
           responseText = (t as any).cmd_not_found;
@@ -978,12 +1014,17 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
       provider.setCustomParameters({
         prompt: 'select_account'
       });
-      const result = await signInWithPopup(auth, provider);
-      if (result.user.email === 'genialnee@gmail.com') {
-        setMessages(prev => [...prev, { role: 'assistant', text: 'Access granted. Welcome, Akmal.' }]);
-      } else {
+      await signInWithPopup(auth, provider);
+      
+      try {
+        // PING FIRESTORE: Проверяем права после успешного логина
+        await getDoc(doc(db, 'system', 'config'));
+        setMessages(prev => [...prev, { role: 'assistant', text: 'Access granted. System control unlocked.' }]);
+        // Здесь не нужно вызывать setIsAdmin(true), так как onAuthStateChanged сделает это реактивно
+      } catch {
+        // Зашел не админ
         setMessages(prev => [...prev, { role: 'assistant', text: 'Identity rejected. Public mode retained.' }]);
-        await signOut(auth);
+        await signOut(auth); // Сразу выкидываем
       }
     } catch (error: any) {
       console.error("Auth error:", error);
@@ -998,6 +1039,15 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
         <div className="flex justify-between items-center pb-4 border-b border-accent/30 mb-6">
           <span className="uppercase tracking-widest">{t.title}</span>
           <div className="flex items-center gap-4">
+            {isAdmin && (
+              <button 
+                onClick={() => setShowEditor(true)}
+                className="text-xs border border-accent px-2 py-0.5 hover:bg-accent hover:text-ink transition-colors flex items-center gap-1"
+                title="Edit Terminal Commands"
+              >
+                <Edit2 size={12} /> EDIT_COMMANDS
+              </button>
+            )}
             {user && (
               <button 
                 onClick={async () => {
@@ -1061,6 +1111,51 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
           </button>
         </form>
       </div>
+
+      {/* Editor Modal for Admin */}
+      {showEditor && isAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/90 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-ink border border-accent w-full max-w-2xl max-h-[90vh] flex flex-col font-mono shadow-2xl">
+            <div className="flex items-center justify-between p-4 border-b border-accent/30">
+              <h3 className="text-accent uppercase tracking-widest flex items-center gap-2">
+                <Database size={16} /> TERMINAL_CONFIG
+              </h3>
+              <button onClick={() => setShowEditor(false)} className="text-accent hover:opacity-70">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-4 overflow-y-auto space-y-6 text-sm">
+              {Object.keys(editForm).map((key) => (
+                <div key={key}>
+                  <label className="block text-accent opacity-70 mb-2 uppercase">/{key}</label>
+                  <textarea
+                    value={(editForm as any)[key]}
+                    onChange={(e) => setEditForm({ ...editForm, [key]: e.target.value })}
+                    className="w-full bg-black/30 border border-accent/30 text-accent p-3 focus:outline-none focus:border-accent min-h-[100px] resize-y custom-scrollbar"
+                    placeholder={`Enter response for /${key} command...`}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="p-4 border-t border-accent/30 flex justify-end gap-3 bg-black/20">
+              <button 
+                onClick={() => setShowEditor(false)}
+                className="px-4 py-2 border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
+              >
+                CANCEL
+              </button>
+              <button 
+                onClick={saveCommands}
+                className="px-4 py-2 bg-accent text-ink hover:opacity-90 font-bold transition-opacity flex items-center gap-2"
+              >
+                <Save size={16} /> SAVE_CHANGES
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -1079,9 +1174,20 @@ export default function App() {
   const [rawHistoryData, setRawHistoryData] = useState<any[] | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      setIsAdmin(currentUser?.email === 'genialnee@gmail.com');
+      if (currentUser) {
+        try {
+          // PING FIRTESTORE: Пытаемся прочитать секретный документ
+          // Если мы не админ (на уровне серверов Google), будет выбита ошибка
+          await getDoc(doc(db, 'system', 'config'));
+          setIsAdmin(true); // Успех! Ошибки нет, мы админ
+        } catch {
+          setIsAdmin(false); // Зашел кто-то чужой, доступ только к публичной части
+        }
+      } else {
+        setIsAdmin(false);
+      }
     });
     return () => unsubscribe();
   }, []);

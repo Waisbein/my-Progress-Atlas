@@ -28,6 +28,13 @@ service cloud.firestore {
     // Rules
     // ===============================================================
 
+    match /system/config {
+      // Секретный документ для "Пинга" прав. 
+      // Прочитать может только админ.
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
     match /progress/{docId} {
       // PUBLIC READ: Любой может смотреть прогресс
       allow read: if true;
