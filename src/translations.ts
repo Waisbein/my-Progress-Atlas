@@ -164,6 +164,7 @@ export const content = {
       title: 'VERSION HISTORY',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
+        { id: 'v1.2.0', date: '2026-04-18', title: 'Terminal Overhaul & Artifact Vault', desc: 'Introduced "Artifacts" — completed lessons can now project expanded technical and architectural insights to visitors. The Console was completely rebuilt: the AI bot was replaced by a deterministic command shell (AKMAL_OS) featuring interactive easter eggs (/manifesto, /lab) to expose the operator\'s engineering mindset.', status: 'RELEASED' },
         { id: 'v1.1.0', date: '2026-04-16', title: 'Firebase & RBAC Update', desc: 'Migrated progress data (tasks, ratings, notes) to Firestore. Implemented Google Auth and strict security rules. The app now fully supports a read-only public mode and an interactive admin mode.', status: 'ACTIVE' },
         { id: 'v0.10', date: '2026-04-15', title: 'Stealth Auth & RBAC Foundation', desc: 'Implemented a hidden authentication layer via the terminal ("godmode" command). The system now distinguishes between public visitors and the admin, laying the groundwork for cloud data migration.', status: 'RELEASED' },
         { id: 'v0.9', date: '2026-04-13', title: 'Skills Redesign & Honest Metrics', desc: 'Completely rethought the visual semantics of the skill map to reflect a T-shaped builder profile (Core, Building, Applied). Also, honestly marked "Shipping Discipline" as a failing metric. Building in public means admitting where the system breaks.', status: 'RELEASED' },
@@ -360,6 +361,7 @@ export const content = {
       title: 'ИСТОРИЯ ВЕРСИЙ',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
+        { id: 'v1.2.0', date: '2026-04-18', title: 'Переработка Терминала и Артефакты знаний', desc: 'Внедрены «Артефакты» — теперь пункты учебного плана могут содержать развернутые технические выводы, доступные посетителям. Консоль полностью переписана: ИИ-бот заменен на олдскульную командную оболочку (AKMAL_OS) с пасхалками (/manifesto, /lab), призванными раскрыть инженерный майндсет.', status: 'ВЫПУЩЕНО' },
         { id: 'v1.1.0', date: '2026-04-16', title: 'Интеграция Firebase и RBAC', desc: 'Прогресс (задачи, оценки, заметки) мигрирован в облачную базу Firestore. Внедрена авторизация через Google и строгие правила безопасности. Приложение теперь полноценно поддерживает публичный режим чтения и интерактивный режим администратора.', status: 'АКТИВНО' },
         { id: 'v0.10', date: '2026-04-15', title: 'Скрытая авторизация и фундамент RBAC', desc: 'Внедрен скрытый слой авторизации через терминал (команда "godmode"). Система теперь различает публичных посетителей и администратора, подготавливая почву для миграции данных в облако.', status: 'ВЫПУЩЕНО' },
         { id: 'v0.9', date: '2026-04-13', title: 'Редизайн Skills и честные метрики', desc: 'Полностью переосмыслена визуальная семантика карты навыков (Ядро, Фундамент, Инструменты). Также навык "Shipping Discipline" честно отмечен как проседающий. Строить публично — значит признавать, где система дает сбой.', status: 'ВЫПУЩЕНО' },
