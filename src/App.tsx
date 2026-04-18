@@ -1136,8 +1136,9 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
       
       try {
         // PING FIRESTORE: Проверяем права после успешного логина
-        await getDoc(doc(db, 'system', 'config'));
-        setMessages(prev => [...prev, { role: 'assistant', text: 'Access granted. System control unlocked.' }]);
+        const configDoc = await getDoc(doc(db, 'system', 'config'));
+        const userName = auth.currentUser?.displayName?.split(' ')[0] || 'User';
+        setMessages(prev => [...prev, { role: 'assistant', text: `Access granted. Hello ${userName}. System control unlocked.` }]);
         // Здесь не нужно вызывать setIsAdmin(true), так как onAuthStateChanged сделает это реактивно
       } catch {
         // Зашел не админ
