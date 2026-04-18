@@ -1007,7 +1007,10 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
     manifesto: '',
     lab: '',
     stats: '',
-    whoami: ''
+    whoami: '',
+    tempAvatarUrl: '',
+    tempAvatarExpiresAt: 0,
+    tempAvatarHours: 0
   });
 
   useEffect(() => {
@@ -1023,7 +1026,8 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
           stats: data.stats || '',
           whoami: data.whoami || '',
           tempAvatarUrl: data.tempAvatarUrl || '',
-          tempAvatarExpiresAt: data.tempAvatarExpiresAt || 0
+          tempAvatarExpiresAt: data.tempAvatarExpiresAt || 0,
+          tempAvatarHours: 0
         });
       }
     });
@@ -1031,8 +1035,13 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
   }, []);
 
   const saveCommands = async () => {
+    const dataToSave = { ...editForm };
+    if (dataToSave.tempAvatarHours && dataToSave.tempAvatarHours > 0) {
+      dataToSave.tempAvatarExpiresAt = Date.now() + (Number(dataToSave.tempAvatarHours) * 3600 * 1000);
+      delete (dataToSave as any).tempAvatarHours;
+    }
     try {
-      await setDoc(doc(db, 'content', 'terminal'), editForm);
+      await setDoc(doc(db, 'content', 'terminal'), dataToSave, { merge: true });
       setShowEditor(false);
     } catch (e) {
       console.error('Failed to save commands', e);
@@ -1255,13 +1264,13 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
                   value={(editForm as any).tempAvatarUrl}
                   onChange={(e) => setEditForm({ ...editForm, tempAvatarUrl: e.target.value })}
                 />
-                <label className="block text-accent opacity-70 mb-2 uppercase">Expire At (Timestamp)</label>
+                <label className="block text-accent opacity-70 mb-2 uppercase">Duration (Hours)</label>
                 <input
                   type="number"
                   className="w-full bg-black/30 border border-accent/30 text-accent p-3 focus:outline-none focus:border-accent"
-                  placeholder={Date.now() + 86400000 + ""}
-                  value={(editForm as any).tempAvatarExpiresAt}
-                  onChange={(e) => setEditForm({ ...editForm, tempAvatarExpiresAt: Number(e.target.value) })}
+                  placeholder="24"
+                  value={(editForm as any).tempAvatarHours}
+                  onChange={(e) => setEditForm({ ...editForm, tempAvatarHours: Number(e.target.value) })}
                 />
               </div>
             </div>
