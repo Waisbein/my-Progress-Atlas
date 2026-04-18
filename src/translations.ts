@@ -183,11 +183,18 @@ export const content = {
       sysPrefix: 'SYS >',
       userPrefix: 'USER >',
       inputPrefix: 'INPUT>',
-      placeholder: 'Query knowledge base...',
+      placeholder: 'Enter command (/help)...',
       send: 'EXECUTE',
-      welcome: 'NOTEBOOK_LM DIAGNOSTIC TERMINAL v2.1\nCONNECTION ESTABLISHED.\nREADY FOR QUERY.',
-      error: 'ERROR: CONNECTION FAILED.',
-      missingKey: 'ERROR: API KEY MISSING.\nRunning outside AI Studio requires a valid GEMINI_API_KEY environment variable.'
+      welcome: 'AKMAL_OS v1.0\nType /help to see available commands.',
+      error: 'ERROR: COMMAND NOT RECOGNIZED.',
+      missingKey: 'ERROR: API KEY MISSING.\nRunning outside AI Studio requires a valid GEMINI_API_KEY environment variable.',
+      cmd_help: 'AVAILABLE COMMANDS:\n/now - Current operational status\n/manifesto - Core operating principles\n/lab - Project graveyard and experiments\n/stats - Unofficial diagnostic metrics\n/whoami - Operator profiler\n/godmode - System identification protocol',
+      cmd_now: 'STATUS: ACTIVE_LEARNING\n\n[READING]: Firestore security rules documentation.\n[CODING]: Writing custom hooks for state management.\n[FOCUS]: Minimizing abstractions. The closer to pure JS/React, the better.',
+      cmd_manifesto: 'SYSTEM PHILOSOPHY:\n\n1. Patience favors those who read documentation.\n2. The best code is no code at all.\n3. UI is merely a projection of state.\n4. Learn in public. Hiding failures delays optimization.',
+      cmd_lab: 'PROJECT GRAVEYARD // OR FUTURE INVESTMENTS:\n\n[Dogwalk]: Dog walker platform. Lesson: Platform complexity is 2x of a marketplace.\n[21day]: Habit building service. Lesson: Retention beats acquisition.\n\nEvery failed project is a deposit into the technical knowledge base.',
+      cmd_stats: 'DIAGNOSTIC METRICS:\n\nCups of coffee consumed: ~412\nDays studying React: 19\nBurnout encounters: 1 (Successfully resolved)\nFavorite error: Cannot read properties of undefined (reading \'map\')',
+      cmd_whoami: 'OPERATOR PROFILER:\n\nCLASS: Fullstack Builder (In Progress)\nSTR (Frontend): 4/10\nINT (Backend): 2/10\nAGI (Soft Skills): 9/10\nRES (Persistence): 10/10\n\nCURRENT OBJECTIVE: Convert persistence into technical competence.',
+      cmd_not_found: 'ERROR: COMMAND NOT FOUND. Type /help'
     }
   },
   ru: {
@@ -372,11 +379,18 @@ export const content = {
       sysPrefix: 'SYS >',
       userPrefix: 'USER >',
       inputPrefix: 'INPUT>',
-      placeholder: 'Введите запрос в базу знаний...',
+      placeholder: 'Введите команду (/help)...',
       send: 'ВЫПОЛНИТЬ',
-      welcome: 'NOTEBOOK_LM ДИАГНОСТИЧЕСКИЙ ТЕРМИНАЛ v2.1\nСОЕДИНЕНИЕ УСТАНОВЛЕНО.\nГОТОВ К ЗАПРОСУ.',
-      error: 'ОШИБКА: СБОЙ ПОДКЛЮЧЕНИЯ.',
-      missingKey: 'ОШИБКА: ОТСУТСТВУЕТ API КЛЮЧ.\nДля работы вне AI Studio необходимо добавить GEMINI_API_KEY в переменные окружения.'
+      welcome: 'AKMAL_OS v1.0\nType /help to see available commands.',
+      error: 'ОШИБКА: КОМАНДА НЕ РАСПОЗНАНА.',
+      missingKey: 'ОШИБКА: ОТСУТСТВУЕТ API КЛЮЧ.\nДля работы вне AI Studio необходимо добавить GEMINI_API_KEY в переменные окружения.',
+      cmd_help: 'ДОСТУПНЫЕ КОМАНДЫ:\n/now - Что происходит прямо сейчас\n/manifesto - Мои принципы работы\n/lab - Кладбище проектов / Эксперименты\n/stats - Неформальные метрики\n/whoami - Profiler оператора\n/godmode - Идентификация системы',
+      cmd_now: 'STATUS: ACTIVE_LEARNING\n\n[ЧИТАЮ]: Документация Firestore security rules.\n[КОДЮ]: Пишу кастомные хуки для стейт-менеджмента.\n[ФОКУС]: Минимизирую абстракции. Чем ближе к чистому JS/React, тем лучше.',
+      cmd_manifesto: 'SYSTEM PHILOSOPHY:\n\n1. Выжидает тот, кто читает документацию.\n2. Лучший код — ненаписанный код.\n3. UI — это всего лишь проекция состояния.\n4. Учись публично. Скрывать ошибки = замедлять обучение.',
+      cmd_lab: 'PROJECT GRAVEYARD // ИЛИ ЗАЛОГ БУДУЩЕГО:\n\n[Dogwalk]: Платформа для выгула собак. Урок: сложность платформы х2 от маркетплейса.\n[21day]: Сервис формирования привычек. Урок: удержание важнее привлечения.\n\nКаждый неудачный проект — это депозит в базу технических знаний.',
+      cmd_stats: 'DIAGNOSTIC METRICS:\n\nЧашек кофе выпито: ~412\nДней изучения React: 19\nКоличество выгораний: 1 (Успешное)\nЛюбимая ошибка: Cannot read properties of undefined (reading \'map\')',
+      cmd_whoami: 'OPERATOR PROFILER:\n\nCLASS: Fullstack Builder (In Progress)\nSTR (Frontend): 4/10\nINT (Backend): 2/10\nAGI (Soft Skills): 9/10\nRES (Persistence): 10/10\n\nCURRENT OBJECTIVE: Convert persistence into technical competence.',
+      cmd_not_found: 'ОШИБКА: КОМАНДА НЕ НАЙДЕНА. Введите /help'
     }
   }
 };

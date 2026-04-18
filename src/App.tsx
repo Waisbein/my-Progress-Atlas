@@ -935,39 +935,41 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
       return;
     }
 
-    try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey || apiKey === 'dummy') {
-        throw new Error('API_KEY_MISSING');
-      }
-
-      const ai = new GoogleGenAI({ apiKey });
+    // Hardcoded Terminal Commands
+    const triggerMsg = userMsg.toLowerCase();
+    
+    // Slight artificial delay for that old-school parsing feel
+    setTimeout(() => {
+      let responseText = '';
       
-      const contents = messages.slice(1).map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.text }]
-      }));
-      contents.push({ role: 'user', parts: [{ text: userMsg }] });
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: contents as any,
-        config: {
-          systemInstruction: "You are an AI learning assistant for Akmal. Answer technically, brutally concisely, and in the language the user speaks.",
-        }
-      });
-
-      setMessages(prev => [...prev, { role: 'assistant', text: response.text || '' }]);
-    } catch (error: any) {
-      console.error(error);
-      if (error.message === 'API_KEY_MISSING' || error.message?.includes('400') || error.message?.includes('403')) {
-        setMessages(prev => [...prev, { role: 'assistant', text: (t as any).missingKey || t.error }]);
-      } else {
-        setMessages(prev => [...prev, { role: 'assistant', text: t.error }]);
+      switch (triggerMsg) {
+        case '/help':
+          responseText = (t as any).cmd_help;
+          break;
+        case '/now':
+          responseText = (t as any).cmd_now;
+          break;
+        case '/manifesto':
+          responseText = (t as any).cmd_manifesto;
+          break;
+        case '/lab':
+          responseText = (t as any).cmd_lab;
+          break;
+        case '/stats':
+          responseText = (t as any).cmd_stats;
+          break;
+        case '/whoami':
+          responseText = (t as any).cmd_whoami;
+          break;
+        default:
+          responseText = (t as any).cmd_not_found;
+          break;
       }
-    } finally {
+      
+      setMessages(prev => [...prev, { role: 'assistant', text: responseText }]);
       setIsLoading(false);
-    }
+    }, 500);
+
   };
 
   const handleManualAuth = async () => {
