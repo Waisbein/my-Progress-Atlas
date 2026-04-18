@@ -42,14 +42,24 @@ const Home = ({ lang, setCurrentPage }: { lang: Lang, setCurrentPage: (page: str
   const t = content[lang].home;
   const [time, setTime] = useState(new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Tashkent' }));
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  
+
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Tashkent' })), 1000);
-    return () => clearInterval(timer);
+    // Sync temporary avatar info
+    const unsub = onSnapshot(doc(db, 'content', 'terminal'), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const now = Date.now();
+        if (data.tempAvatarUrl && data.tempAvatarExpiresAt && now < data.tempAvatarExpiresAt) {
+          setAvatarUrl(data.tempAvatarUrl);
+        } else {
+          setAvatarUrl(null); // Back to default
+        }
+      }
+    });
+    return () => unsub();
   }, []);
 
-  // Use either custom avatar or the standard dev placeholder
-  const loadedAvatar = "https://i.ibb.co/0jyFNp6w/my-photo.jpg";
+  const loadedAvatar = avatarUrl || "https://i.ibb.co/0jyFNp6w/my-photo.jpg";
 
   return (
     <div className="animate-in fade-in duration-0">
@@ -914,7 +924,9 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
           manifesto: data.manifesto || '',
           lab: data.lab || '',
           stats: data.stats || '',
-          whoami: data.whoami || ''
+          whoami: data.whoami || '',
+          tempAvatarUrl: data.tempAvatarUrl || '',
+          tempAvatarExpiresAt: data.tempAvatarExpiresAt || 0
         });
       }
     });
@@ -1126,7 +1138,7 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
             </div>
             
             <div className="p-4 overflow-y-auto space-y-6 text-sm">
-              {Object.keys(editForm).map((key) => (
+              {Object.keys(editForm).filter(k => k !== 'tempAvatarUrl' && k !== 'tempAvatarExpiresAt').map((key) => (
                 <div key={key}>
                   <label className="block text-accent opacity-70 mb-2 uppercase">/{key}</label>
                   <textarea
@@ -1137,6 +1149,24 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
                   />
                 </div>
               ))}
+              <div className="border-t border-accent/30 pt-6 mt-6">
+                <label className="block text-accent opacity-70 mb-2 uppercase">Temporary Avatar URL</label>
+                <input
+                  type="text"
+                  className="w-full bg-black/30 border border-accent/30 text-accent p-3 focus:outline-none focus:border-accent mb-2"
+                  placeholder="https://i.ibb.co/..."
+                  value={(editForm as any).tempAvatarUrl}
+                  onChange={(e) => setEditForm({ ...editForm, tempAvatarUrl: e.target.value })}
+                />
+                <label className="block text-accent opacity-70 mb-2 uppercase">Expire At (Timestamp)</label>
+                <input
+                  type="number"
+                  className="w-full bg-black/30 border border-accent/30 text-accent p-3 focus:outline-none focus:border-accent"
+                  placeholder={Date.now() + 86400000 + ""}
+                  value={(editForm as any).tempAvatarExpiresAt}
+                  onChange={(e) => setEditForm({ ...editForm, tempAvatarExpiresAt: Number(e.target.value) })}
+                />
+              </div>
             </div>
 
             <div className="p-4 border-t border-accent/30 flex justify-end gap-3 bg-black/20">
