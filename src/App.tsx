@@ -36,6 +36,22 @@ const Tag = ({ children, active }: { children: React.ReactNode; active?: boolean
   </span>
 );
 
+const Typewriter = ({ text, speed = 10 }: { text: string; speed?: number }) => {
+  const [displayedText, setDisplayedText] = useState('');
+
+  useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayedText(text.substring(0, i));
+      i++;
+      if (i > text.length) clearInterval(interval);
+    }, speed);
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return <>{displayedText}</>;
+};
+
 // --- PAGES ---
 
 const Home = ({ lang, setCurrentPage, isAdmin }: { lang: Lang, setCurrentPage: (page: string) => void, isAdmin: boolean }) => {
@@ -1002,6 +1018,7 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
   const bottomRef = useRef<HTMLDivElement>(null);
   const [commandsData, setCommandsData] = useState<any>(null);
   const [showEditor, setShowEditor] = useState(false);
+  const [traffic, setTraffic] = useState(0);
   const [editForm, setEditForm] = useState({
     now: '',
     manifesto: '',
@@ -1012,6 +1029,13 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
     tempAvatarExpiresAt: 0,
     tempAvatarHours: 0
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTraffic(Math.floor(Math.random() * 900) + 100);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     // Subscribe to content/terminal from Firestore
@@ -1137,8 +1161,7 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
       try {
         // PING FIRESTORE: Проверяем права после успешного логина
         const configDoc = await getDoc(doc(db, 'system', 'config'));
-        const userName = auth.currentUser?.displayName?.split(' ')[0] || 'User';
-        setMessages(prev => [...prev, { role: 'assistant', text: `Access granted. Hello ${userName}. System control unlocked.` }]);
+        setMessages(prev => [...prev, { role: 'assistant', text: `Access granted. Hello Akmal. System control unlocked.` }]);
         // Здесь не нужно вызывать setIsAdmin(true), так как onAuthStateChanged сделает это реактивно
       } catch {
         // Зашел не админ
@@ -1156,7 +1179,10 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
       <div className="flex-1 bg-ink text-accent p-6 md:p-8 flex flex-col min-h-[500px] max-h-[700px] overflow-hidden font-mono shadow-xl">
         {/* Header */}
         <div className="flex justify-between items-center pb-4 border-b border-accent/30 mb-6">
-          <span className="uppercase tracking-widest">{t.title}</span>
+          <div className="flex items-center gap-4">
+            <span className="uppercase tracking-widest">{t.title}</span>
+            <span className="font-mono text-xs opacity-50 hidden md:inline">RX: {traffic}kb/s</span>
+          </div>
           <div className="flex items-center gap-4">
             {isAdmin && (
               <button 
@@ -1189,7 +1215,7 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
             <div key={i} className="flex flex-col items-start">
               <div className="text-accent whitespace-pre-wrap leading-relaxed">
                 <span className="opacity-70 mr-2">{m.role === 'assistant' ? t.sysPrefix : t.userPrefix}</span>
-                {m.text}
+                {m.role === 'assistant' ? <Typewriter text={m.text} speed={40} /> : m.text}
               </div>
               {m.isAuthPrompt && !user && (
                 <button 
