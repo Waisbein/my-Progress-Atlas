@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Terminal, ArrowRight, Activity, Database, Folder, Mail, Cpu, ChevronRight, History, ListChecks, Globe, Edit2, Plus, X, Save, Trash2 } from 'lucide-react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { content, Lang } from './translations';
 import { GoogleGenAI } from '@google/genai';
 import { auth } from './firebase';
@@ -1324,9 +1325,20 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
 };
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [lang, setLang] = useState<Lang>('en');
+  
+  // Persist language to localStorage
+  const [lang, setLang] = useState<Lang>(() => {
+    const saved = localStorage.getItem('akmal_os_lang');
+    if (saved === 'en' || saved === 'ru') return saved;
+    return 'en';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('akmal_os_lang', lang);
+  }, [lang]);
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -1500,27 +1512,16 @@ export default function App() {
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   const navItems = [
-    { id: 'home', label: t.home, icon: Activity },
-    { id: 'plan', label: t.plan, icon: ListChecks },
-    { id: 'skills', label: t.skills, icon: Database },
-    { id: 'progress', label: t.progress, icon: Activity },
-    { id: 'works', label: t.works, icon: Folder },
-    { id: 'console', label: t.console, icon: Terminal },
-    { id: 'history', label: t.history, icon: History },
+    { id: '/', label: t.home, icon: Activity },
+    { id: '/plan', label: t.plan, icon: ListChecks },
+    { id: '/skills', label: t.skills, icon: Database },
+    { id: '/progress', label: t.progress, icon: Activity },
+    { id: '/works', label: t.works, icon: Folder },
+    { id: '/console', label: t.console, icon: Terminal },
+    { id: '/history', label: t.history, icon: History },
   ];
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home': return <Home lang={lang} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />;
-      case 'plan': return <LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} rawPlanData={rawPlanData} savePlanToFirestore={savePlanToFirestore} />;
-      case 'skills': return <Skills lang={lang} />;
-      case 'progress': return <Progress lang={lang} completed={completed} planData={planData} />;
-      case 'works': return <Works lang={lang} />;
-      case 'console': return <Console lang={lang} user={user} isAdmin={isAdmin} />;
-      case 'history': return <VersionHistory lang={lang} historyData={historyData} isAdmin={isAdmin} rawHistoryData={rawHistoryData} saveHistoryToFirestore={saveHistoryToFirestore} />;
-      default: return <Home lang={lang} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />;
-    }
-  };
+  // No longer using switch statement, Routes handle it in the render
 
   const toggleLang = () => {
     setLang(prev => prev === 'en' ? 'ru' : 'en');
@@ -1576,12 +1577,12 @@ export default function App() {
         
         <ul className="flex flex-col gap-1 font-mono text-sm">
           {navItems.map((item, i) => {
-            const isActive = currentPage === item.id;
+            const isActive = location.pathname === item.id || (item.id !== '/' && location.pathname.startsWith(item.id));
             return (
               <li key={item.id}>
                 <button
                   onClick={() => {
-                    setCurrentPage(item.id);
+                    navigate(item.id);
                     setMobileMenuOpen(false);
                   }}
                   className={`w-full flex items-center gap-3 text-left uppercase px-3 py-3 border border-transparent hover:border-ink hover:bg-ink hover:text-paper transition-none ${isActive ? 'bg-ink text-paper border-ink' : ''}`}
@@ -1611,7 +1612,16 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 p-6 md:p-16 lg:p-24 max-w-6xl w-full mx-auto overflow-x-hidden">
-        {renderPage()}
+        <Routes>
+          <Route path="/" element={<Home lang={lang} setCurrentPage={(p) => navigate(`/${p !== 'home' ? p : ''}`)} isAdmin={isAdmin} />} />
+          <Route path="/plan" element={<LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} rawPlanData={rawPlanData} savePlanToFirestore={savePlanToFirestore} />} />
+          <Route path="/skills" element={<Skills lang={lang} />} />
+          <Route path="/progress" element={<Progress lang={lang} completed={completed} planData={planData} />} />
+          <Route path="/works" element={<Works lang={lang} />} />
+          <Route path="/console" element={<Console lang={lang} user={user} isAdmin={isAdmin} />} />
+          <Route path="/history" element={<VersionHistory lang={lang} historyData={historyData} isAdmin={isAdmin} rawHistoryData={rawHistoryData} saveHistoryToFirestore={saveHistoryToFirestore} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
       
     </div>
