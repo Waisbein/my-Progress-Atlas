@@ -1134,6 +1134,9 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
         case '/lab':
           responseText = commandsData?.lab || (t as any).cmd_lab;
           break;
+        case '/background':
+          responseText = commandsData?.background || (t as any).cmd_background;
+          break;
         case '/stats':
           responseText = commandsData?.stats || (t as any).cmd_stats;
           break;
