@@ -1223,6 +1223,13 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
                 <span className="opacity-70 mr-2">{m.role === 'assistant' ? t.sysPrefix : t.userPrefix}</span>
                 {m.role === 'assistant' ? <Typewriter text={m.text} speed={40} /> : m.text}
               </div>
+              {(m.text.includes('PAST EXPERIENCE') || m.text.includes('ПРОШЛЫЙ ОПЫТ')) && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <a href="https://www.instagram.com/12_inch_store/" target="_blank" rel="noopener noreferrer" className="px-4 py-1 border border-accent hover:bg-accent hover:text-ink transition-none uppercase tracking-widest text-sm">Handmade Vinyl Clocks</a>
+                  <a href="https://www.instagram.com/welight.uz/" target="_blank" rel="noopener noreferrer" className="px-4 py-1 border border-accent hover:bg-accent hover:text-ink transition-none uppercase tracking-widest text-sm">Custom Design Lamps</a>
+                  <a href="https://www.instagram.com/carta.coffee/" target="_blank" rel="noopener noreferrer" className="px-4 py-1 border border-accent hover:bg-accent hover:text-ink transition-none uppercase tracking-widest text-sm">Drip Coffee</a>
+                </div>
+               )}
               {m.isAuthPrompt && !user && (
                 <button 
                   onClick={handleManualAuth}
