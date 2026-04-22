@@ -460,7 +460,7 @@ const LearningPlan = ({
   
   // Data State for Editors
   const [wForm, setWForm] = useState({ enTitle: '', ruTitle: '', enObj: '', ruObj: '' });
-  const [tForm, setTForm] = useState({ id: '', day: '', ref: '', enText: '', ruText: '', enArtifact: '', ruArtifact: '' });
+  const [tForm, setTForm] = useState({ id: '', day: '', url: '', enText: '', ruText: '', enArtifact: '', ruArtifact: '' });
   const [activeArtifact, setActiveArtifact] = useState<{title: string, content: string} | null>(null);
 
   // Main Thread progress
@@ -504,7 +504,7 @@ const LearningPlan = ({
     if (!rawPlanData) return;
     const t = rawPlanData[wIndex].tasks[tIndex];
     setTForm({
-      id: t.id || '', day: t.day || '', ref: t.ref || '',
+      id: t.id || '', day: t.day || '', url: t.url || '',
       enText: t.en?.text || '', ruText: t.ru?.text || '',
       enArtifact: t.en?.artifact || '', ruArtifact: t.ru?.artifact || ''
     });
@@ -519,7 +519,7 @@ const LearningPlan = ({
     const newTasks = [...newData[wIndex].tasks];
     newTasks[tIndex] = {
       ...newTasks[tIndex],
-      id: tForm.id, day: tForm.day, ref: tForm.ref,
+      id: tForm.id, day: tForm.day, url: tForm.url,
       en: { text: tForm.enText, artifact: tForm.enArtifact },
       ru: { text: tForm.ruText, artifact: tForm.ruArtifact }
     };
@@ -756,7 +756,7 @@ const LearningPlan = ({
                 <div className="flex-1"><label className="block mb-1 opacity-50">ID</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.id} onChange={e => setTForm({...tForm, id: e.target.value})} /></div>
                 <div className="flex-1"><label className="block mb-1 opacity-50">Day</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.day} onChange={e => setTForm({...tForm, day: e.target.value})} /></div>
               </div>
-              <div><label className="block mb-1 opacity-50">Ref URL (optional)</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.ref} onChange={e => setTForm({...tForm, ref: e.target.value})} /></div>
+              <div><label className="block mb-1 opacity-50">Ref URL (optional)</label><input className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.url} onChange={e => setTForm({...tForm, url: e.target.value})} /></div>
               <div><label className="block mb-1 opacity-50">Text (EN)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.enText} onChange={e => setTForm({...tForm, enText: e.target.value})} /></div>
               <div><label className="block mb-1 opacity-50">Text (RU)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none" value={tForm.ruText} onChange={e => setTForm({...tForm, ruText: e.target.value})} /></div>
               <div><label className="block mb-1 text-accent opacity-80">Artifact (EN) (Optional markdown/text)</label><textarea className="w-full bg-ink/5 border border-ink p-2 outline-none min-h-[100px]" value={tForm.enArtifact} onChange={e => setTForm({...tForm, enArtifact: e.target.value})} /></div>
@@ -1472,6 +1472,7 @@ export default function App() {
       id: t.id,
       day: t.day,
       ref: t.ref,
+      url: t.url,
       text: t[lang]?.text || ''
     }))
   })) : content[lang].plan.weeks;

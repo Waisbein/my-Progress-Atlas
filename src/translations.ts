@@ -83,7 +83,7 @@ export const content = {
           week: 2,
           title: "Data Model + SQL + Storage",
           tasks: [
-            { id: 'd8', day: 8, text: "[STUDY] Design entities and relationships" },
+            { id: 'd8', day: 8, text: "[STUDY] Design entities and relationships", url: 'https://notebooklm.google.com/notebook/8b6d184a-63a5-4825-a55f-6b2a1a3ec26a' },
             { id: 'd9', day: 9, text: "[STUDY] Practice SQL basics by hand" },
             { id: 'd10', day: 10, text: "[STUDY] Learn source of truth and data ownership" },
             { id: 'd11', day: 11, text: "[STUDY] Learn DB vs storage vs local state" },
