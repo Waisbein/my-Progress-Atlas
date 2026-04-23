@@ -1157,12 +1157,12 @@ const VersionHistory = ({
                   </p>
                   
                   {isAdmin && (
-                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover/ver:opacity-100">
-                       <button onClick={() => openEditVersion(i)} className="bg-paper text-ink px-2 py-1 uppercase font-mono text-[10px] border border-ink hover:bg-accent hover:border-accent hover:text-paper">
-                         Edit
+                    <div className="absolute top-2 right-2 flex gap-2">
+                       <button onClick={() => openEditVersion(i)} className="bg-paper text-ink px-2 py-1 uppercase font-mono text-[10px] border border-ink hover:bg-accent hover:border-accent hover:text-paper shadow-sm">
+                         [EDIT]
                        </button>
-                       <button onClick={() => deleteVersion(i)} className="bg-paper text-ink px-2 py-1 uppercase font-mono text-[10px] border border-ink hover:bg-red-500 hover:border-red-500 hover:text-paper">
-                         Delete
+                       <button onClick={() => deleteVersion(i)} className="bg-paper text-ink px-2 py-1 uppercase font-mono text-[10px] border border-ink hover:bg-red-500 hover:border-red-500 hover:text-paper shadow-sm">
+                         [DEL]
                        </button>
                     </div>
                   )}
