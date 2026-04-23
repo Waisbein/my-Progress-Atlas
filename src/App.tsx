@@ -409,13 +409,136 @@ const Progress = ({ lang, completed, planData }: { lang: Lang, completed: Record
   );
 };
 
-const Works = ({ lang }: { lang: Lang }) => {
-  const t = content[lang].works;
+const Works = ({ 
+  lang, 
+  worksData, 
+  isAdmin, 
+  rawWorksData, 
+  saveWorksToFirestore 
+}: { 
+  lang: Lang, 
+  worksData?: any, 
+  isAdmin?: boolean, 
+  rawWorksData?: any[] | null, 
+  saveWorksToFirestore?: (d: any[]) => void 
+}) => {
+  const t = worksData || content[lang].works;
   const [expandedWork, setExpandedWork] = useState<string | null>(null);
+  
+  const [isEditingJson, setIsEditingJson] = useState(false);
+  const [jsonStr, setJsonStr] = useState('');
+
+  const handeSaveJson = () => {
+    if (!isAdmin || !saveWorksToFirestore) return;
+    try {
+      const parsed = JSON.parse(jsonStr);
+      saveWorksToFirestore(parsed);
+      setIsEditingJson(false);
+    } catch (e) {
+      alert("Invalid JSON data");
+    }
+  }
+  
+  // Default structure for saving to DB
+  const handleMoveImage = (workId: string, imageIndex: number, direction: 'up' | 'down') => {
+    if (!isAdmin || !saveWorksToFirestore || !rawWorksData) return;
+    
+    // Find the work item index
+    const workIndex = rawWorksData.findIndex(w => w.id === workId);
+    if (workIndex === -1) return;
+    
+    const newData = [...rawWorksData];
+    const work = { ...newData[workIndex] };
+    const images = [...(work.images || [])];
+    
+    if (direction === 'up' && imageIndex > 0) {
+      [images[imageIndex - 1], images[imageIndex]] = [images[imageIndex], images[imageIndex - 1]];
+    } else if (direction === 'down' && imageIndex < images.length - 1) {
+      [images[imageIndex + 1], images[imageIndex]] = [images[imageIndex], images[imageIndex + 1]];
+    }
+    
+    work.images = images;
+    newData[workIndex] = work;
+    saveWorksToFirestore(newData);
+  };
 
   return (
     <div className="animate-in fade-in duration-0">
-      <PageHeader title={t.title} metadata={t.meta} />
+      <div className="flex justify-between items-end mb-6">
+        <PageHeader title={t.title} metadata={t.meta} />
+        {isAdmin && (
+          <div className="mb-12 flex gap-4">
+            {!rawWorksData ? (
+              <button 
+                onClick={() => {
+                  if (saveWorksToFirestore) {
+                    const initData = content.en.works.items.map((enItem, idx) => {
+                      const ruItem = content.ru.works.items[idx];
+                      return {
+                        id: enItem.id,
+                        date: enItem.date,
+                        url: enItem.url || '',
+                        tgUrl: enItem.tgUrl || '',
+                        techStack: enItem.techStack || [],
+                        images: enItem.images || [],
+                        en: {
+                          title: enItem.title,
+                          type: enItem.type,
+                          desc: enItem.desc,
+                          lessons: enItem.lessons || ''
+                        },
+                        ru: {
+                          title: ruItem.title,
+                          type: ruItem.type,
+                          desc: ruItem.desc,
+                          lessons: ruItem.lessons || ''
+                        }
+                      };
+                    });
+                    saveWorksToFirestore(initData);
+                  }
+                }}
+                className="font-mono text-xs border border-ink px-4 py-2 hover:bg-ink hover:text-paper uppercase flex items-center gap-2"
+              >
+                <Save className="w-3 h-3" /> [INIT_DB_FROM_STATIC]
+              </button>
+            ) : (
+               <div className="flex gap-4 items-center">
+                 <div className="font-mono text-xs text-accent uppercase">[DB_SYNCED]</div>
+                 <button 
+                   onClick={() => {
+                     setJsonStr(JSON.stringify(rawWorksData, null, 2));
+                     setIsEditingJson(true);
+                   }}
+                   className="font-mono text-xs border border-ink px-4 py-2 hover:bg-ink hover:text-paper uppercase flex items-center gap-2"
+                 >
+                   <Edit2 className="w-3 h-3" /> [EDIT_DATA_JSON]
+                 </button>
+               </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {isEditingJson && isAdmin && (
+        <div className="mb-8 border border-ink p-4 bg-ink/5 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4">
+           <div className="font-mono text-xs uppercase text-ink-muted">JSON WORK_DATA_EDITOR //</div>
+           <textarea 
+             value={jsonStr}
+             onChange={e => setJsonStr(e.target.value)}
+             className="w-full h-96 bg-transparent border border-ink/30 p-4 font-mono text-xs focus:outline-none focus:border-ink resize-y"
+             spellCheck={false}
+           />
+           <div className="flex gap-4">
+             <button onClick={handeSaveJson} className="font-mono text-xs bg-ink text-paper px-4 py-2 hover:bg-ink/80 flex items-center gap-2">
+               <Save className="w-3 h-3"/> [SAVE_TO_DB]
+             </button>
+             <button onClick={() => setIsEditingJson(false)} className="font-mono text-xs border border-ink px-4 py-2 hover:bg-ink/10 flex items-center gap-2">
+               <X className="w-3 h-3"/> [CANCEL]
+             </button>
+           </div>
+        </div>
+      )}
       
       <div className="flex flex-col gap-8">
         {t.items.map((art) => {
@@ -488,9 +611,19 @@ const Works = ({ lang }: { lang: Lang }) => {
                   {art.images && art.images.length > 0 && (
                     <div>
                       <div className="font-mono text-xs text-ink-muted mb-4 uppercase tracking-widest">VISUAL_ASSETS //</div>
-                      <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar snap-x">
+                      <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar snap-x relative">
                         {art.images.map((img: string, i: number) => (
-                          <div key={i} className="h-96 w-auto aspect-[9/19] shrink-0 snap-center border border-ink/20 p-1 bg-ink/5">
+                          <div key={i} className="group/img h-96 w-auto aspect-[9/19] shrink-0 snap-center border border-ink/20 p-1 bg-ink/5 relative">
+                            {isAdmin && (
+                               <div className="absolute inset-0 bg-ink/80 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                                  <button onClick={(e) => { e.stopPropagation(); handleMoveImage(art.id, i, 'up'); }} className="text-paper border border-paper p-2 hover:bg-paper hover:text-ink">
+                                    <ChevronRight className="w-6 h-6 rotate-180" />
+                                  </button>
+                                  <button onClick={(e) => { e.stopPropagation(); handleMoveImage(art.id, i, 'down'); }} className="text-paper border border-paper p-2 hover:bg-paper hover:text-ink">
+                                    <ChevronRight className="w-6 h-6" />
+                                  </button>
+                               </div>
+                            )}
                             <img src={img} alt={`${art.title} screen ${i+1}`} className="h-full w-full object-cover" />
                           </div>
                         ))}
@@ -1439,6 +1572,7 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [rawPlanData, setRawPlanData] = useState<any[] | null>(null);
   const [rawHistoryData, setRawHistoryData] = useState<any[] | null>(null);
+  const [rawWorksData, setRawWorksData] = useState<any[] | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -1482,6 +1616,13 @@ export default function App() {
       }
     });
 
+    const worksRef = doc(db, 'content', 'works');
+    const unsubWorks = onSnapshot(worksRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setRawWorksData(docSnap.data().items || null);
+      }
+    });
+
     const docRef = doc(db, 'progress', 'akmal');
     let unsubProgress: any = null;
 
@@ -1514,6 +1655,7 @@ export default function App() {
     return () => {
       unsubPlan();
       unsubHistory();
+      unsubWorks();
       if (unsubProgress) unsubProgress();
     };
   }, [isAdmin]);
@@ -1588,6 +1730,32 @@ export default function App() {
     }
   };
 
+  const saveWorksToFirestore = async (updatedRawWorks: any[]) => {
+    if (!isAdmin) return;
+    try {
+      await setDoc(doc(db, 'content', 'works'), { items: updatedRawWorks }, { merge: true });
+    } catch (error) {
+      console.error("Error saving works:", error);
+    }
+  };
+
+  const worksData = rawWorksData ? {
+    title: content[lang].works.title,
+    meta: content[lang].works.meta,
+    typeLabel: content[lang].works.typeLabel,
+    items: rawWorksData.map(w => ({
+      id: w.id,
+      date: w.date,
+      url: w.url,
+      tgUrl: w.tgUrl,
+      images: w.images || [],
+      techStack: w.techStack || [],
+      title: w[lang]?.title || '',
+      type: w[lang]?.type || '',
+      desc: w[lang]?.desc || '',
+      lessons: w[lang]?.lessons || ''
+    }))
+  } : content[lang].works;
   const historyData = rawHistoryData ? {
     title: content[lang].history.title,
     meta: content[lang].history.meta,
@@ -1710,7 +1878,7 @@ export default function App() {
           <Route path="/plan" element={<LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} rawPlanData={rawPlanData} savePlanToFirestore={savePlanToFirestore} />} />
           <Route path="/skills" element={<Skills lang={lang} />} />
           <Route path="/progress" element={<Progress lang={lang} completed={completed} planData={planData} />} />
-          <Route path="/works" element={<Works lang={lang} />} />
+          <Route path="/works" element={<Works lang={lang} worksData={worksData} isAdmin={isAdmin} rawWorksData={rawWorksData} saveWorksToFirestore={saveWorksToFirestore} />} />
           <Route path="/console" element={<Console lang={lang} user={user} isAdmin={isAdmin} />} />
           <Route path="/history" element={<VersionHistory lang={lang} historyData={historyData} isAdmin={isAdmin} rawHistoryData={rawHistoryData} saveHistoryToFirestore={saveHistoryToFirestore} />} />
           <Route path="*" element={<Navigate to="/" replace />} />

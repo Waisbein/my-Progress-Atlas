@@ -172,7 +172,28 @@ export const content = {
           techStack: ['React', 'Telegram Web App', 'Leaflet', 'Geolocation API', 'Tailwind CSS'],
           lessons: 'Platform complexity is 2x of a standard marketplace. Taught me architecture, data flow, deployment, and storage decisions.'
         },
-        { id: 'Project 2', title: 'COFFEE MENU', type: 'Menu / Interface Prototype', date: '2026', desc: 'A structured digital menu concept for a cafe. Focused on interface clarity, content structure, and product presentation.' },
+        { 
+          id: 'Project 2', 
+          title: '21 DAY APP', 
+          type: 'Habit Tracker / Community App', 
+          date: '2026', 
+          desc: 'A gamified habit-building platform designed for influencer challenges (e.g., "21 days without regrets"). Stalled primarily due to constraints within the Telegram Mini App environment and deep backend complexities (auth, database relations) that exceeded my stack knowledge at the time.',
+          images: [
+            'https://i.ibb.co/DHph1TYg/photo-2026-04-23-18-59-42.jpg',
+            'https://i.ibb.co/PvYS1p7k/photo-2026-04-23-18-59-50.jpg',
+            'https://i.ibb.co/gFZ4tXbK/photo-2026-04-23-18-59-47.jpg',
+            'https://i.ibb.co/7N2Wtx1K/photo-2026-04-23-18-59-43.jpg',
+            'https://i.ibb.co/S40zb94Y/photo-2026-04-23-18-59-46.jpg',
+            'https://i.ibb.co/vvKRKfQY/photo-2026-04-23-18-59-51.jpg',
+            'https://i.ibb.co/j9NBvDk8/photo-2026-04-23-18-59-45.jpg',
+            'https://i.ibb.co/TBnbzY4Q/photo-2026-04-23-18-59-49.jpg',
+            'https://i.ibb.co/ns8jmsV9/photo-2026-04-23-18-59-41.jpg',
+            'https://i.ibb.co/YT37GWpf/photo-2026-04-23-18-59-40.jpg',
+            'https://i.ibb.co/G3PmkZB1/photo-2026-04-23-18-59-38.jpg'
+          ],
+          techStack: ['React', 'Telegram Web App', 'AI Studio'],
+          lessons: 'You cannot build a community app entirely prompted by AI if you don\'t understand Data Base architecture. Taught me the severe limitations of Telegram\'s WebView and the absolute necessity of mastering Auth and Backend State.' 
+        },
         { id: 'Project 3', title: '21DAY', type: 'Habit Tracker / Social Product Prototype', date: '2026', desc: 'An early-stage habit tracker with a social direction. This project exposed gaps in auth, lifecycle understanding, initialization flow, and overall system control.' },
         { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'This project itself. A public system that tracks my learning path, completed work, technical foundations, and the evolution of the site as a product.' },
       ]
@@ -387,8 +408,28 @@ export const content = {
           techStack: ['React', 'Telegram Web App', 'Leaflet', 'Geolocation API', 'Tailwind CSS'],
           lessons: 'Сложность платформы х2 от обычного маркетплейса. Научился строить архитектуру, флоу данных, деплой и принимать решения по хранению стейта.'
         },
-        { id: 'Project 2', title: 'COFFEE MENU', type: 'Menu / Interface Prototype', date: '2026', desc: 'Цифровой концепт меню для кофейни. Фокус был на ясности интерфейса, структуре контента и подаче продукта.' },
-        { id: 'Project 3', title: '21DAY', type: 'Habit Tracker / Social Product Prototype', date: '2026', desc: 'Ранний прототип трекера привычек с социального направления. Этот проект выявил пробелы в auth, lifecycle, initialization flow и общем контроле над системой.' },
+        { 
+          id: 'Project 2', 
+          title: '21 DAY APP', 
+          type: 'Habit Tracker / Community App', 
+          date: '2026', 
+          desc: 'Геймифицированная платформа для привычек, придуманная под челлендж блогера ("21 день без сожалений"). Проект упёрся в жесткие ограничения среды Telegram, а также в сложную серверную логику (аутентификация, базы данных), которую на тот момент я не мог вытянуть только за счет ИИ-ассистентов.',
+          images: [
+            'https://i.ibb.co/DHph1TYg/photo-2026-04-23-18-59-42.jpg',
+            'https://i.ibb.co/PvYS1p7k/photo-2026-04-23-18-59-50.jpg',
+            'https://i.ibb.co/gFZ4tXbK/photo-2026-04-23-18-59-47.jpg',
+            'https://i.ibb.co/7N2Wtx1K/photo-2026-04-23-18-59-43.jpg',
+            'https://i.ibb.co/S40zb94Y/photo-2026-04-23-18-59-46.jpg',
+            'https://i.ibb.co/vvKRKfQY/photo-2026-04-23-18-59-51.jpg',
+            'https://i.ibb.co/j9NBvDk8/photo-2026-04-23-18-59-45.jpg',
+            'https://i.ibb.co/TBnbzY4Q/photo-2026-04-23-18-59-49.jpg',
+            'https://i.ibb.co/ns8jmsV9/photo-2026-04-23-18-59-41.jpg',
+            'https://i.ibb.co/YT37GWpf/photo-2026-04-23-18-59-40.jpg',
+            'https://i.ibb.co/G3PmkZB1/photo-2026-04-23-18-59-38.jpg'
+          ],
+          techStack: ['React', 'Telegram Web App', 'AI Studio'],
+          lessons: 'Невозможно построить социальное приложение чисто на промптах, если не понимаешь архитектуру БД. Проект показал мне суровые границы WebView внутри Телеграма и доказал, что жизненно необходимо изучать Auth и Backend самостоятельно.' 
+        },
         { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'Сам этот проект. Публичная система, которая отслеживает мой учебный путь, реальные работы, фундаментальные технические темы и развитие самого сайта как продукта.' },
       ]
     },
