@@ -411,24 +411,104 @@ const Progress = ({ lang, completed, planData }: { lang: Lang, completed: Record
 
 const Works = ({ lang }: { lang: Lang }) => {
   const t = content[lang].works;
+  const [expandedWork, setExpandedWork] = useState<string | null>(null);
+
   return (
     <div className="animate-in fade-in duration-0">
       <PageHeader title={t.title} metadata={t.meta} />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {t.items.map((art) => (
-          <div key={art.id} className="border-t-4 border-ink border-x border-b p-6 flex flex-col group cursor-pointer hover:bg-ink hover:text-paper transition-none">
-            <div className="aspect-video bg-ink/10 mb-6 border border-ink group-hover:border-paper/30 flex items-center justify-center overflow-hidden relative">
-               <div className="absolute inset-0 opacity-20 group-hover:opacity-40" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, var(--color-ink) 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
-               <span className="font-mono text-4xl opacity-20 group-hover:opacity-100 group-hover:text-paper transition-none z-10">{art.id}</span>
+      <div className="flex flex-col gap-8">
+        {t.items.map((art) => {
+          const isExpanded = expandedWork === art.id;
+          
+          return (
+            <div 
+              key={art.id} 
+              className={`border-t-4 border-ink border-x border-b p-6 flex flex-col transition-colors duration-300 ${isExpanded ? 'bg-ink/5' : 'hover:bg-ink hover:text-paper group cursor-pointer'}`}
+              onClick={() => !isExpanded && setExpandedWork(art.id)}
+            >
+              <div className="flex justify-between items-start mb-6 pointer-events-none">
+                <div className={`font-mono text-xs opacity-50 ${!isExpanded && 'group-hover:opacity-80'}`}>{art.id}</div>
+                <div className="font-mono text-xs opacity-50">{art.date}</div>
+              </div>
+              <h3 className="font-display text-2xl uppercase tracking-tight mb-2 pointer-events-none">{art.title}</h3>
+              <div className={`font-mono text-xs opacity-70 mb-4 uppercase pointer-events-none ${!isExpanded && 'group-hover:text-paper/70'}`}>
+                {t.typeLabel} {art.type}
+              </div>
+              <p className={`font-body text-base leading-relaxed mb-6 pointer-events-none ${isExpanded ? 'opacity-80' : ''}`}>
+                {art.desc}
+              </p>
+              
+              {!isExpanded && (
+                <div className="mt-auto self-start border border-ink/30 px-4 py-2 text-xs font-mono group-hover:border-paper group-hover:text-paper uppercase tracking-widest">
+                  [INSPECT_PROJECT]
+                </div>
+              )}
+
+              {isExpanded && (
+                <div className="mt-4 pt-6 border-t border-ink/20 animate-in slide-in-from-top-4 fade-in duration-300 flex flex-col gap-8 cursor-default" onClick={e => e.stopPropagation()}>
+                  
+                  {/* Links */}
+                  {(art.url || art.tgUrl) && (
+                    <div className="flex flex-wrap gap-4">
+                      {art.url && (
+                        <a href={art.url} target="_blank" rel="noopener noreferrer" className="border border-ink shadow-[2px_2px_0px_0px_var(--color-ink)] px-4 py-2 text-xs font-mono hover:bg-accent hover:text-ink hover:border-accent hover:shadow-[2px_2px_0px_0px_var(--color-accent)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all">
+                          [LIVE_DEPLOYMENT]
+                        </a>
+                      )}
+                      {art.tgUrl && (
+                        <a href={art.tgUrl} target="_blank" rel="noopener noreferrer" className="border border-ink shadow-[2px_2px_0px_0px_var(--color-ink)] px-4 py-2 text-xs font-mono hover:bg-accent hover:text-ink hover:border-accent hover:shadow-[2px_2px_0px_0px_var(--color-accent)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all">
+                          [OPEN_IN_TELEGRAM]
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Details Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {art.techStack && (
+                        <div>
+                          <div className="font-mono text-xs text-ink-muted mb-3 uppercase tracking-widest">TECH_STACK //</div>
+                          <div className="flex flex-wrap gap-2">
+                            {art.techStack.map((tech: string, i: number) => (
+                              <span key={i} className="text-xs font-mono border border-ink/20 bg-ink/5 px-2 py-1">{tech}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {art.lessons && (
+                        <div>
+                          <div className="font-mono text-xs text-ink-muted mb-3 uppercase tracking-widest">POSTMORTEM //</div>
+                          <p className="font-body text-sm text-ink leading-relaxed border-l-2 border-accent pl-4 py-1 italic tracking-tight">{art.lessons}</p>
+                        </div>
+                      )}
+                  </div>
+
+                  {/* Visuals Gallery */}
+                  {art.images && art.images.length > 0 && (
+                    <div>
+                      <div className="font-mono text-xs text-ink-muted mb-4 uppercase tracking-widest">VISUAL_ASSETS //</div>
+                      <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar snap-x">
+                        {art.images.map((img: string, i: number) => (
+                          <div key={i} className="h-96 w-auto aspect-[9/19] shrink-0 snap-center border border-ink/20 p-1 bg-ink/5">
+                            <img src={img} alt={`${art.title} screen ${i+1}`} className="h-full w-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <button 
+                    className="self-end mt-4 text-xs font-mono text-ink-muted hover:text-accent hover:underline uppercase tracking-widest"
+                    onClick={() => setExpandedWork(null)}
+                  >
+                     [CLOSE_INSPECTOR]
+                  </button>
+                </div>
+              )}
             </div>
-            <h3 className="font-display text-2xl uppercase tracking-tight mb-4">{art.title}</h3>
-            <div className="mt-auto flex justify-between font-mono text-xs border-t border-ink/20 group-hover:border-paper/20 pt-4">
-              <span className="uppercase text-ink-muted group-hover:text-paper/70">{t.typeLabel} {art.type}</span>
-              <span className="text-ink-muted group-hover:text-paper/70">{art.date}</span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

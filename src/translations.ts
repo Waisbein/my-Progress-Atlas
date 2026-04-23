@@ -154,7 +154,24 @@ export const content = {
       meta: '[SEC-05] // PROOF OF WORK',
       typeLabel: 'TYPE:',
       items: [
-        { id: 'Project 1', title: 'DOGWALK TASHKENT', type: 'Telegram Mini App / Marketplace Prototype', date: '2026', desc: 'A marketplace concept for dog walkers and dog owners. This project taught me hard lessons about architecture, data flow, deployment, storage decisions, and the cost of building without enough systems understanding.' },
+        { 
+          id: 'Project 1', 
+          title: 'DOGWALK TASHKENT', 
+          type: 'Telegram Mini App / Marketplace Prototype', 
+          date: '2026', 
+          desc: 'A marketplace concept for dog walkers and dog owners. This project taught me hard lessons about architecture, data flow, deployment, storage decisions, and the cost of building without enough systems understanding.',
+          url: 'https://dogwalk-nu.vercel.app/',
+          tgUrl: 'https://t.me/dogwalkuzbot',
+          images: [
+            'https://i.ibb.co/zhncbYr8/photo-2026-04-23-17-50-49.jpg',
+            'https://i.ibb.co/k6gRkyCv/photo-2026-04-23-17-50-54.jpg',
+            'https://i.ibb.co/ym0QmWTJ/photo-2026-04-23-17-50-52.jpg',
+            'https://i.ibb.co/1fmsb0x4/photo-2026-04-23-17-50-50.jpg',
+            'https://i.ibb.co/NdqJpDDC/photo-2026-04-23-17-50-47.jpg'
+          ],
+          techStack: ['React', 'Telegram Web App', 'Leaflet', 'Geolocation API', 'Tailwind CSS'],
+          lessons: 'Platform complexity is 2x of a standard marketplace. Taught me architecture, data flow, deployment, and storage decisions.'
+        },
         { id: 'Project 2', title: 'COFFEE MENU', type: 'Menu / Interface Prototype', date: '2026', desc: 'A structured digital menu concept for a cafe. Focused on interface clarity, content structure, and product presentation.' },
         { id: 'Project 3', title: '21DAY', type: 'Habit Tracker / Social Product Prototype', date: '2026', desc: 'An early-stage habit tracker with a social direction. This project exposed gaps in auth, lifecycle understanding, initialization flow, and overall system control.' },
         { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'This project itself. A public system that tracks my learning path, completed work, technical foundations, and the evolution of the site as a product.' },
@@ -352,9 +369,26 @@ export const content = {
       meta: '[SEC-05] // PROOF OF WORK',
       typeLabel: 'ТИП:',
       items: [
-        { id: 'Project 1', title: 'DOGWALK TASHKENT', type: 'Telegram Mini App / Marketplace Prototype', date: '2026', desc: 'Концепт маркетплейса для выгульщиков собак и владельцев. Этот проект научил меня жёстким вещам про архитектуру, data flow, deployment, storage decisions и цену разработки без достаточного системного понимания.' },
+        { 
+          id: 'Project 1', 
+          title: 'DOGWALK TASHKENT', 
+          type: 'Telegram Mini App / Marketplace Prototype', 
+          date: '2026', 
+          desc: 'Концепт маркетплейса для выгульщиков собак и владельцев. Этот проект научил меня жёстким вещам про архитектуру, data flow, deployment, storage decisions и цену разработки без достаточного системного понимания.',
+          url: 'https://dogwalk-nu.vercel.app/',
+          tgUrl: 'https://t.me/dogwalkuzbot',
+          images: [
+            'https://i.ibb.co/zhncbYr8/photo-2026-04-23-17-50-49.jpg',
+            'https://i.ibb.co/k6gRkyCv/photo-2026-04-23-17-50-54.jpg',
+            'https://i.ibb.co/ym0QmWTJ/photo-2026-04-23-17-50-52.jpg',
+            'https://i.ibb.co/1fmsb0x4/photo-2026-04-23-17-50-50.jpg',
+            'https://i.ibb.co/NdqJpDDC/photo-2026-04-23-17-50-47.jpg'
+          ],
+          techStack: ['React', 'Telegram Web App', 'Leaflet', 'Geolocation API', 'Tailwind CSS'],
+          lessons: 'Сложность платформы х2 от обычного маркетплейса. Научился строить архитектуру, флоу данных, деплой и принимать решения по хранению стейта.'
+        },
         { id: 'Project 2', title: 'COFFEE MENU', type: 'Menu / Interface Prototype', date: '2026', desc: 'Цифровой концепт меню для кофейни. Фокус был на ясности интерфейса, структуре контента и подаче продукта.' },
-        { id: 'Project 3', title: '21DAY', type: 'Habit Tracker / Social Product Prototype', date: '2026', desc: 'Ранний прототип трекера привычек с социальным направлением. Этот проект выявил пробелы в auth, lifecycle, initialization flow и общем контроле над системой.' },
+        { id: 'Project 3', title: '21DAY', type: 'Habit Tracker / Social Product Prototype', date: '2026', desc: 'Ранний прототип трекера привычек с социального направления. Этот проект выявил пробелы в auth, lifecycle, initialization flow и общем контроле над системой.' },
         { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'Сам этот проект. Публичная система, которая отслеживает мой учебный путь, реальные работы, фундаментальные технические темы и развитие самого сайта как продукта.' },
       ]
     },
