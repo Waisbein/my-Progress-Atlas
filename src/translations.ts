@@ -195,8 +195,7 @@ export const content = {
           tgUrl: 'https://t.me/sir21daybot',
           lessons: 'You cannot build a community app entirely prompted by AI if you don\'t understand Data Base architecture. Taught me the severe limitations of Telegram\'s WebView and the absolute necessity of mastering Auth and Backend State.' 
         },
-        { id: 'Project 3', title: '21DAY', type: 'Habit Tracker / Social Product Prototype', date: '2026', desc: 'An early-stage habit tracker with a social direction. This project exposed gaps in auth, lifecycle understanding, initialization flow, and overall system control.' },
-        { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'This project itself. A public system that tracks my learning path, completed work, technical foundations, and the evolution of the site as a product.' },
+        { id: 'Project 3', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'This project itself. A public system that tracks my learning path, completed work, technical foundations, and the evolution of the site as a product.' },
       ]
     },
     history: {

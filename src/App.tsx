@@ -468,10 +468,10 @@ const Works = ({
 
   return (
     <div className="animate-in fade-in duration-0">
-      <div className="flex justify-between items-end mb-6">
+      <div className="flex flex-col gap-6 md:flex-row md:justify-between md:items-end mb-6">
         <PageHeader title={t.title} metadata={t.meta} />
         {isAdmin && (
-          <div className="mb-12 flex gap-4">
+          <div className="mb-12 md:mb-0 flex flex-wrap gap-4 p-4 border border-accent bg-accent/10">
             {!rawWorksData ? (
               <button 
                 onClick={() => {
@@ -502,21 +502,21 @@ const Works = ({
                     saveWorksToFirestore(initData);
                   }
                 }}
-                className="font-mono text-xs border border-ink px-4 py-2 hover:bg-ink hover:text-paper uppercase flex items-center gap-2"
+                className="font-mono text-xs border border-ink bg-paper px-4 py-2 hover:bg-ink hover:text-paper uppercase flex items-center gap-2"
               >
-                <Save className="w-3 h-3" /> [INIT_DB_FROM_STATIC]
+                <Save className="w-4 h-4" /> [INIT_DB_FROM_STATIC]
               </button>
             ) : (
-               <div className="flex gap-4 items-center">
-                 <div className="font-mono text-xs text-accent uppercase">[DB_SYNCED]</div>
+               <div className="flex flex-wrap gap-4 items-center">
+                 <div className="font-mono text-sm text-accent font-bold uppercase">[DB_SYNCED]</div>
                  <button 
                    onClick={() => {
                      setJsonStr(JSON.stringify(rawWorksData, null, 2));
                      setIsEditingJson(true);
                    }}
-                   className="font-mono text-xs border border-ink px-4 py-2 hover:bg-ink hover:text-paper uppercase flex items-center gap-2"
+                   className="font-mono text-xs border border-ink bg-paper px-4 py-2 hover:bg-ink hover:text-paper uppercase flex items-center gap-2"
                  >
-                   <Edit2 className="w-3 h-3" /> [EDIT_DATA_JSON]
+                   <Edit2 className="w-4 h-4" /> [EDIT_DATA_JSON]
                  </button>
                </div>
             )}
