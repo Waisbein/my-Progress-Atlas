@@ -452,9 +452,13 @@ const Works = ({
     const images = [...(work.images || [])];
     
     if (direction === 'up' && imageIndex > 0) {
-      [images[imageIndex - 1], images[imageIndex]] = [images[imageIndex], images[imageIndex - 1]];
+      const temp = images[imageIndex - 1];
+      images[imageIndex - 1] = images[imageIndex];
+      images[imageIndex] = temp;
     } else if (direction === 'down' && imageIndex < images.length - 1) {
-      [images[imageIndex + 1], images[imageIndex]] = [images[imageIndex], images[imageIndex + 1]];
+      const temp = images[imageIndex + 1];
+      images[imageIndex + 1] = images[imageIndex];
+      images[imageIndex] = temp;
     }
     
     work.images = images;
@@ -615,11 +619,11 @@ const Works = ({
                         {art.images.map((img: string, i: number) => (
                           <div key={i} className="group/img h-96 w-auto aspect-[9/19] shrink-0 snap-center border border-ink/20 p-1 bg-ink/5 relative">
                             {isAdmin && (
-                               <div className="absolute inset-0 bg-ink/80 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                                  <button onClick={(e) => { e.stopPropagation(); handleMoveImage(art.id, i, 'up'); }} className="text-paper border border-paper p-2 hover:bg-paper hover:text-ink">
+                               <div className="absolute inset-0 bg-ink/80 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-4 z-10 pointer-events-none group-hover/img:pointer-events-auto">
+                                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleMoveImage(art.id, i, 'up'); }} className="text-paper border border-paper p-2 hover:bg-paper hover:text-ink pointer-events-auto">
                                     <ChevronRight className="w-6 h-6 rotate-180" />
                                   </button>
-                                  <button onClick={(e) => { e.stopPropagation(); handleMoveImage(art.id, i, 'down'); }} className="text-paper border border-paper p-2 hover:bg-paper hover:text-ink">
+                                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleMoveImage(art.id, i, 'down'); }} className="text-paper border border-paper p-2 hover:bg-paper hover:text-ink pointer-events-auto">
                                     <ChevronRight className="w-6 h-6" />
                                   </button>
                                </div>

@@ -192,6 +192,7 @@ export const content = {
             'https://i.ibb.co/G3PmkZB1/photo-2026-04-23-18-59-38.jpg'
           ],
           techStack: ['React', 'Telegram Web App', 'AI Studio'],
+          tgUrl: 'https://t.me/sir21daybot',
           lessons: 'You cannot build a community app entirely prompted by AI if you don\'t understand Data Base architecture. Taught me the severe limitations of Telegram\'s WebView and the absolute necessity of mastering Auth and Backend State.' 
         },
         { id: 'Project 3', title: '21DAY', type: 'Habit Tracker / Social Product Prototype', date: '2026', desc: 'An early-stage habit tracker with a social direction. This project exposed gaps in auth, lifecycle understanding, initialization flow, and overall system control.' },
@@ -428,6 +429,7 @@ export const content = {
             'https://i.ibb.co/G3PmkZB1/photo-2026-04-23-18-59-38.jpg'
           ],
           techStack: ['React', 'Telegram Web App', 'AI Studio'],
+          tgUrl: 'https://t.me/sir21daybot',
           lessons: 'Невозможно построить социальное приложение чисто на промптах, если не понимаешь архитектуру БД. Проект показал мне суровые границы WebView внутри Телеграма и доказал, что жизненно необходимо изучать Auth и Backend самостоятельно.' 
         },
         { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'Сам этот проект. Публичная система, которая отслеживает мой учебный путь, реальные работы, фундаментальные технические темы и развитие самого сайта как продукта.' },
