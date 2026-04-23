@@ -195,13 +195,30 @@ export const content = {
           tgUrl: 'https://t.me/sir21daybot',
           lessons: 'You cannot build a community app entirely prompted by AI if you don\'t understand Data Base architecture. Taught me the severe limitations of Telegram\'s WebView and the absolute necessity of mastering Auth and Backend State.' 
         },
-        { id: 'Project 3', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'This project itself. A public system that tracks my learning path, completed work, technical foundations, and the evolution of the site as a product.' },
+        { 
+          id: 'Project 3', 
+          title: 'BON! COFFEE MENU', 
+          type: 'Telegram Mini App / Menu Prototype', 
+          date: '2026', 
+          desc: 'My very first attempt at building an application. A Telegram Mini App menu prototype designed and pitched to the Bon! coffee shop chain. Built entirely using Google AI Studio.',
+          images: [
+            'https://i.ibb.co/F4r0h3ZB/photo-2026-04-23-22-07-51.jpg',
+            'https://i.ibb.co/9HMfB4Bw/photo-2026-04-23-22-07-50.jpg',
+            'https://i.ibb.co/ynBzT1mR/photo-2026-04-23-22-07-49.jpg',
+            'https://i.ibb.co/7dft5PjX/photo-2026-04-23-22-07-52.jpg'
+          ],
+          techStack: ['React', 'Telegram Web App', 'AI Studio'],
+          tgUrl: 'http://t.me/iawadmtbot/bonmenu',
+          lessons: 'Looking back, I realize there were poor architectural decisions regarding media storage and image hosting. A valuable first lesson in the importance of proper asset management and systemic planning.' 
+        },
+        { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'This project itself. A public system that tracks my learning path, completed work, technical foundations, and the evolution of the site as a product.' },
       ]
     },
     history: {
       title: 'VERSION HISTORY',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
+        { id: 'v1.3.0', date: '2026-04-23', title: 'Works CMS & Database Sync', desc: 'The "Works" section was upgraded from static code to a database-driven module (Firestore). Added administrative controls to reorder images and edit JSON project data on the fly. Note: Visual assets are temporarily hosted on external public static storages rather than dedicated cloud buckets to optimize initial prototype costs.', status: 'ACTIVE' },
         { id: 'v1.2.0', date: '2026-04-18', title: 'Terminal Overhaul & Artifact Vault', desc: 'Introduced "Artifacts" — completed lessons can now project expanded technical and architectural insights to visitors. The Console was completely rebuilt: the AI bot was replaced by a deterministic command shell (AKMAL_OS) featuring interactive easter eggs (/manifesto, /lab) to expose the operator\'s engineering mindset.', status: 'RELEASED' },
         { id: 'v1.1.0', date: '2026-04-16', title: 'Firebase & RBAC Update', desc: 'Migrated progress data (tasks, ratings, notes) to Firestore. Implemented Google Auth and strict security rules. The app now fully supports a read-only public mode and an interactive admin mode.', status: 'ACTIVE' },
         { id: 'v0.10', date: '2026-04-15', title: 'Stealth Auth & RBAC Foundation', desc: 'Implemented a hidden authentication layer via the terminal ("godmode" command). The system now distinguishes between public visitors and the admin, laying the groundwork for cloud data migration.', status: 'RELEASED' },
@@ -431,6 +448,22 @@ export const content = {
           tgUrl: 'https://t.me/sir21daybot',
           lessons: 'Невозможно построить социальное приложение чисто на промптах, если не понимаешь архитектуру БД. Проект показал мне суровые границы WebView внутри Телеграма и доказал, что жизненно необходимо изучать Auth и Backend самостоятельно.' 
         },
+        { 
+          id: 'Project 3', 
+          title: 'BON! COFFEE MENU', 
+          type: 'Telegram Mini App / Menu Prototype', 
+          date: '2026', 
+          desc: 'Моя самая первая попытка разработки приложения. Прототип меню в среде Telegram Mini App, который я собрал с помощью Google AI Studio и предложил сети кофеен Bon!.',
+          images: [
+            'https://i.ibb.co/F4r0h3ZB/photo-2026-04-23-22-07-51.jpg',
+            'https://i.ibb.co/9HMfB4Bw/photo-2026-04-23-22-07-50.jpg',
+            'https://i.ibb.co/ynBzT1mR/photo-2026-04-23-22-07-49.jpg',
+            'https://i.ibb.co/7dft5PjX/photo-2026-04-23-22-07-52.jpg'
+          ],
+          techStack: ['React', 'Telegram Web App', 'AI Studio'],
+          tgUrl: 'http://t.me/iawadmtbot/bonmenu',
+          lessons: 'Оглядываясь назад, я понимаю, что принял крайне неудачные архитектурные решения по части хранения фотографий и медиафайлов. Это стало отличным первым уроком о важности правильного управления ассетами.' 
+        },
         { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'Сам этот проект. Публичная система, которая отслеживает мой учебный путь, реальные работы, фундаментальные технические темы и развитие самого сайта как продукта.' },
       ]
     },
@@ -438,6 +471,7 @@ export const content = {
       title: 'ИСТОРИЯ ВЕРСИЙ',
       meta: '[SEC-06] // PRODUCT CHANGELOG',
       items: [
+        { id: 'v1.3.0', date: '2026-04-23', title: 'Works CMS и интеграция базы данных', desc: 'Раздел "Работы" переведен из статичного кода на базу данных (Firestore). Внедрены инструменты администратора для редактирования JSON-данных проектов и перестановки скриншотов. Примечание: визуальные ассеты временно загружаются с внешних публичных хостингов, а не из собственного Storage, в целях оптимизации расходов на прототип.', status: 'АКТИВНО' },
         { id: 'v1.2.0', date: '2026-04-18', title: 'Переработка Терминала и Артефакты знаний', desc: 'Внедрены «Артефакты» — теперь пункты учебного плана могут содержать развернутые технические выводы, доступные посетителям. Консоль полностью переписана: ИИ-бот заменен на олдскульную командную оболочку (AKMAL_OS) с пасхалками (/manifesto, /lab), призванными раскрыть инженерный майндсет.', status: 'ВЫПУЩЕНО' },
         { id: 'v1.1.0', date: '2026-04-16', title: 'Интеграция Firebase и RBAC', desc: 'Прогресс (задачи, оценки, заметки) мигрирован в облачную базу Firestore. Внедрена авторизация через Google и строгие правила безопасности. Приложение теперь полноценно поддерживает публичный режим чтения и интерактивный режим администратора.', status: 'АКТИВНО' },
         { id: 'v0.10', date: '2026-04-15', title: 'Скрытая авторизация и фундамент RBAC', desc: 'Внедрен скрытый слой авторизации через терминал (команда "godmode"). Система теперь различает публичных посетителей и администратора, подготавливая почву для миграции данных в облако.', status: 'ВЫПУЩЕНО' },

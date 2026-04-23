@@ -472,7 +472,7 @@ const Works = ({
         <PageHeader title={t.title} metadata={t.meta} />
         {isAdmin && (
           <div className="mb-12 md:mb-0 flex flex-wrap gap-4 p-4 border border-accent bg-accent/10">
-            {!rawWorksData ? (
+            {!rawWorksData || rawWorksData.length === 0 ? (
               <button 
                 onClick={() => {
                   if (saveWorksToFirestore) {
