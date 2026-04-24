@@ -47,7 +47,7 @@ export function Uploader() {
 
   return (
     <div className="border border-accent p-4 font-mono text-sm mb-6 bg-ink/50">
-      <div className="font-bold text-accent mb-2">>> R2 IMAGE UPLOADER (ADMIN)</div>
+      <div className="font-bold text-accent mb-2">{">>" } R2 IMAGE UPLOADER (ADMIN)</div>
       <p className="text-paper/70 mb-4 text-xs">Загрузка картинок на Cloudflare R2 напрямую из браузера.</p>
       
       <div className="flex flex-col gap-3">

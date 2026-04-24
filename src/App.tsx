@@ -429,6 +429,8 @@ const Works = ({
   const [isEditingJson, setIsEditingJson] = useState(false);
   const [jsonStr, setJsonStr] = useState('');
 
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
   const handeSaveJson = () => {
     if (!isAdmin || !saveWorksToFirestore) return;
     try {
@@ -662,7 +664,13 @@ const Works = ({
                                   </button>
                                </div>
                             )}
-                            <img src={img} alt={`${art.title} screen ${i+1}`} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                            <img 
+                              src={img} 
+                              alt={`${art.title} screen ${i+1}`} 
+                              className="h-full w-full object-cover cursor-zoom-in" 
+                              onClick={(e) => { e.stopPropagation(); setLightboxImage(img); }}
+                              referrerPolicy="no-referrer" 
+                            />
                           </div>
                         ))}
                       </div>
@@ -681,6 +689,21 @@ const Works = ({
           );
         })}
       </div>
+
+      {/* Lightbox for Images */}
+      {lightboxImage && (
+        <div 
+          className="fixed inset-0 z-[100] bg-ink/90 flex items-center justify-center p-4 cursor-zoom-out animate-in fade-in duration-200"
+          onClick={() => setLightboxImage(null)}
+        >
+          <img 
+            src={lightboxImage} 
+            alt="Fullscreen" 
+            className="max-w-full max-h-full object-contain pointer-events-none" 
+            referrerPolicy="no-referrer" 
+          />
+        </div>
+      )}
     </div>
   );
 };
