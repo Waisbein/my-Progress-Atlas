@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Terminal, ArrowRight, Activity, Database, Folder, Mail, Cpu, ChevronRight, History, ListChecks, Globe, Edit2, Plus, X, Save, Trash2 } from 'lucide-react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { content, Lang } from './translations';
+import { Uploader } from './components/Uploader';
 import { GoogleGenAI } from '@google/genai';
 import { auth } from './firebase';
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
@@ -1910,6 +1911,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 p-6 md:p-16 lg:p-24 max-w-6xl w-full mx-auto overflow-x-hidden">
+        {isAdmin && <Uploader />}
         <Routes>
           <Route path="/" element={<Home lang={lang} setCurrentPage={(p) => navigate(`/${p !== 'home' ? p : ''}`)} isAdmin={isAdmin} />} />
           <Route path="/plan" element={<LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} rawPlanData={rawPlanData} savePlanToFirestore={savePlanToFirestore} />} />
