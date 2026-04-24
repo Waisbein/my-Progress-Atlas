@@ -1294,6 +1294,7 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
   const [commandsData, setCommandsData] = useState<any>(null);
   const [showEditor, setShowEditor] = useState(false);
   const [traffic, setTraffic] = useState(0);
+  const [showUploader, setShowUploader] = useState(false);
   const [editForm, setEditForm] = useState({
     now: '',
     manifesto: '',
@@ -1380,6 +1381,17 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
       return;
     }
 
+    if (userMsg.toLowerCase() === 'upload' || userMsg.toLowerCase() === '/upload') {
+      if (isAdmin) {
+        setShowUploader(!showUploader);
+        setMessages(prev => [...prev, { role: 'assistant', text: !showUploader ? 'Uploader interface initialized.' : 'Uploader hidden.' }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', text: 'ACCESS DENIED. Admin privilege required.' }]);
+      }
+      setIsLoading(false);
+      return;
+    }
+
     if (userMsg.toLowerCase() === 'migrate') {
       if (isAdmin) {
         runMigration();
@@ -1456,6 +1468,7 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
 
   return (
     <div className="animate-in fade-in duration-0 h-full flex flex-col">
+      {showUploader && isAdmin && <Uploader />}
       <div className="flex-1 bg-ink text-accent p-6 md:p-8 flex flex-col min-h-[500px] max-h-[700px] overflow-hidden font-mono shadow-xl">
         {/* Header */}
         <div className="flex justify-between items-center pb-4 border-b border-accent/30 mb-6">
@@ -1934,7 +1947,6 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 p-6 md:p-16 lg:p-24 max-w-6xl w-full mx-auto overflow-x-hidden">
-        {isAdmin && <Uploader />}
         <Routes>
           <Route path="/" element={<Home lang={lang} setCurrentPage={(p) => navigate(`/${p !== 'home' ? p : ''}`)} isAdmin={isAdmin} />} />
           <Route path="/plan" element={<LearningPlan lang={lang} completed={completed} toggleTask={toggleTask} planData={planData} ratings={ratings} updateRating={updateRating} notes={notes} updateNote={updateNote} isAdmin={isAdmin} rawPlanData={rawPlanData} savePlanToFirestore={savePlanToFirestore} />} />
