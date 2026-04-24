@@ -659,7 +659,7 @@ const Works = ({
                                   </button>
                                </div>
                             )}
-                            <img src={img} alt={`${art.title} screen ${i+1}`} className="h-full w-full object-cover" />
+                            <img src={img} alt={`${art.title} screen ${i+1}`} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                           </div>
                         ))}
                       </div>
