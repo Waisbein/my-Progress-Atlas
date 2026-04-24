@@ -517,8 +517,10 @@ const Works = ({
                          return {
                            id: enItem.id,
                            date: enItem.date,
+                           url: (enItem as any).url || '',
+                           tgUrl: (enItem as any).tgUrl || '',
+                           images: (enItem as any).images || [],
                            techStack: enItem.techStack,
-                           tgUrl: enItem.tgUrl || '',
                            en: {
                              title: enItem.title,
                              type: enItem.type,
@@ -526,10 +528,10 @@ const Works = ({
                              lessons: enItem.lessons || ''
                            },
                            ru: {
-                             title: ruItem.title,
-                             type: ruItem.type,
-                             desc: ruItem.desc,
-                             lessons: ruItem.lessons || ''
+                             title: ruItem?.title || '',
+                             type: ruItem?.type || '',
+                             desc: ruItem?.desc || '',
+                             lessons: ruItem?.lessons || ''
                            }
                          };
                        });
