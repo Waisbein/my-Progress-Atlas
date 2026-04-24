@@ -464,6 +464,22 @@ export const content = {
           tgUrl: 'http://t.me/iawadmtbot/bonmenu',
           lessons: 'Оглядываясь назад, я понимаю, что принял крайне неудачные архитектурные решения по части хранения фотографий и медиафайлов. Это стало отличным первым уроком о важности правильного управления ассетами.' 
         },
+        { 
+          id: 'Project 3', 
+          title: 'BON! COFFEE MENU', 
+          type: 'Telegram Mini App / Menu Prototype', 
+          date: '2026', 
+          desc: 'Моя самая первая попытка разработки приложения. Прототип меню в среде Telegram Mini App, который я собрал с помощью Google AI Studio и предложил сети кофеен Bon!.',
+          images: [
+            'https://i.ibb.co/F4r0h3ZB/photo-2026-04-23-22-07-51.jpg',
+            'https://i.ibb.co/9HMfB4Bw/photo-2026-04-23-22-07-50.jpg',
+            'https://i.ibb.co/ynBzT1mR/photo-2026-04-23-22-07-49.jpg',
+            'https://i.ibb.co/7dft5PjX/photo-2026-04-23-22-07-52.jpg'
+          ],
+          techStack: ['React', 'Telegram Web App', 'AI Studio'],
+          tgUrl: 'http://t.me/iawadmtbot/bonmenu',
+          lessons: 'Оглядываясь назад, я понимаю, что принял крайне неудачные архитектурные решения по части хранения фотографий и медиафайлов. Это стало отличным первым уроком о важности правильного управления ассетами.' 
+        },
         { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'Сам этот проект. Публичная система, которая отслеживает мой учебный путь, реальные работы, фундаментальные технические темы и развитие самого сайта как продукта.' },
       ]
     },
