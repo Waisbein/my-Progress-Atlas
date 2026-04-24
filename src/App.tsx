@@ -511,6 +511,37 @@ const Works = ({
                  <div className="font-mono text-sm text-accent font-bold uppercase">[DB_SYNCED]</div>
                  <button 
                    onClick={() => {
+                     if (window.confirm('This will overwrite the database with static data from translations.ts. Are you sure?')) {
+                       const initData = content.en.works.items.map((enItem, i) => {
+                         const ruItem = content.ru.works.items[i];
+                         return {
+                           id: enItem.id,
+                           date: enItem.date,
+                           techStack: enItem.techStack,
+                           tgUrl: enItem.tgUrl || '',
+                           en: {
+                             title: enItem.title,
+                             type: enItem.type,
+                             desc: enItem.desc,
+                             lessons: enItem.lessons || ''
+                           },
+                           ru: {
+                             title: ruItem.title,
+                             type: ruItem.type,
+                             desc: ruItem.desc,
+                             lessons: ruItem.lessons || ''
+                           }
+                         };
+                       });
+                       saveWorksToFirestore(initData);
+                     }
+                   }}
+                   className="font-mono text-xs border border-ink bg-paper px-4 py-2 hover:bg-ink hover:text-paper uppercase flex items-center gap-2"
+                 >
+                   <Save className="w-4 h-4" /> [RE-SYNC_FROM_STATIC]
+                 </button>
+                 <button 
+                   onClick={() => {
                      setJsonStr(JSON.stringify(rawWorksData, null, 2));
                      setIsEditingJson(true);
                    }}

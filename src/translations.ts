@@ -211,7 +211,18 @@ export const content = {
           tgUrl: 'http://t.me/iawadmtbot/bonmenu',
           lessons: 'Looking back, I realize there were poor architectural decisions regarding media storage and image hosting. A valuable first lesson in the importance of proper asset management and systemic planning.' 
         },
-        { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'This project itself. A public system that tracks my learning path, completed work, technical foundations, and the evolution of the site as a product.' },
+        { 
+          id: 'Project 4', 
+          title: 'PROGRESS ATLAS', 
+          type: 'Public Learning Dashboard', 
+          date: '2026', 
+          desc: 'This project itself is my training ground. I act as a Product Owner here: deploying tasks to AI and requesting detailed explanations of the outcome, underlying logic, alternative options, and solutions. In practice, I am getting my head around how databases, deployment, and architecture work.',
+          images: [
+            'https://i.ibb.co/HL9265pw/2026-04-24-15-40-17.png'
+          ],
+          techStack: ['React', 'Firebase (Firestore)', 'Google AI Studio', 'Cloud Run'],
+          lessons: 'It is too early for global conclusions as I heavily rely on AI. The main skill right now is clearly articulating tasks, breaking them down, and diving into the logic. I am also learning technical trade-offs: for instance, hosting images on a free platform because there is no reason to pay for Firebase Storage.'
+        },
       ]
     },
     history: {
@@ -465,22 +476,17 @@ export const content = {
           lessons: 'Оглядываясь назад, я понимаю, что принял крайне неудачные архитектурные решения по части хранения фотографий и медиафайлов. Это стало отличным первым уроком о важности правильного управления ассетами.' 
         },
         { 
-          id: 'Project 3', 
-          title: 'BON! COFFEE MENU', 
-          type: 'Telegram Mini App / Menu Prototype', 
+          id: 'Project 4', 
+          title: 'PROGRESS ATLAS', 
+          type: 'Public Learning Dashboard', 
           date: '2026', 
-          desc: 'Моя самая первая попытка разработки приложения. Прототип меню в среде Telegram Mini App, который я собрал с помощью Google AI Studio и предложил сети кофеен Bon!.',
+          desc: 'Сам этот проект — мой тренировочный полигон. Выступаю тут как продакт-оунер: ставлю задачи ИИ и прошу детально объяснять результат, логику действий, альтернативные варианты, решения. На практике разбираюсь, как работают базы данных, деплой и архитектура.',
           images: [
-            'https://i.ibb.co/F4r0h3ZB/photo-2026-04-23-22-07-51.jpg',
-            'https://i.ibb.co/9HMfB4Bw/photo-2026-04-23-22-07-50.jpg',
-            'https://i.ibb.co/ynBzT1mR/photo-2026-04-23-22-07-49.jpg',
-            'https://i.ibb.co/7dft5PjX/photo-2026-04-23-22-07-52.jpg'
+            'https://i.ibb.co/HL9265pw/2026-04-24-15-40-17.png'
           ],
-          techStack: ['React', 'Telegram Web App', 'AI Studio'],
-          tgUrl: 'http://t.me/iawadmtbot/bonmenu',
-          lessons: 'Оглядываясь назад, я понимаю, что принял крайне неудачные архитектурные решения по части хранения фотографий и медиафайлов. Это стало отличным первым уроком о важности правильного управления ассетами.' 
+          techStack: ['React', 'Firebase (Firestore)', 'Google AI Studio', 'Cloud Run'],
+          lessons: 'Глобальные выводы делать рано, я сильно завишу от ИИ. Главный навык сейчас — внятно ставить задачи, дробить их и вникать в логику. Также учусь техническим компромиссам: например, храню картинки на бесплатном хостинге, ибо нечего платить за Firebase Storage.'
         },
-        { id: 'Project 4', title: 'PROGRESS ATLAS', type: 'Public Learning Dashboard', date: '2026', desc: 'Сам этот проект. Публичная система, которая отслеживает мой учебный путь, реальные работы, фундаментальные технические темы и развитие самого сайта как продукта.' },
       ]
     },
     history: {
