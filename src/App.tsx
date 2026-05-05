@@ -1289,6 +1289,8 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
     { role: 'assistant', text: t.welcome }
   ]);
   const [input, setInput] = useState('');
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const [commandsData, setCommandsData] = useState<any>(null);
@@ -1306,6 +1308,27 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
     tempAvatarExpiresAt: 0,
     tempAvatarHours: 0
   });
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex < history.length - 1) {
+        const nextIndex = historyIndex + 1;
+        setHistoryIndex(nextIndex);
+        setInput(history[history.length - 1 - nextIndex]);
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        const nextIndex = historyIndex - 1;
+        setHistoryIndex(nextIndex);
+        setInput(history[history.length - 1 - nextIndex]);
+      } else if (historyIndex === 0) {
+        setHistoryIndex(-1);
+        setInput('');
+      }
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1359,6 +1382,8 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
     if (!input.trim() || isLoading) return;
 
     const userMsg = input.trim();
+    setHistory(prev => [...prev, userMsg]);
+    setHistoryIndex(-1);
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsLoading(true);
@@ -1543,6 +1568,7 @@ const Console = ({ lang, user, isAdmin }: { lang: Lang, user: User | null, isAdm
             type="text" 
             value={input}
             onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder={t.placeholder}
             className="flex-1 bg-transparent border-none outline-none text-accent placeholder:text-accent/30"
             autoFocus
