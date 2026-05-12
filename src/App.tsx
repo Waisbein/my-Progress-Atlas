@@ -8,6 +8,7 @@ import { auth } from './firebase';
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
+import myPhotoUrl from './assets/images/regenerated_image_1778592761821.jpg';
 
 // --- COMPONENTS ---
 
@@ -114,7 +115,7 @@ const Home = ({ lang, setCurrentPage, isAdmin }: { lang: Lang, setCurrentPage: (
     }
   };
 
-  const loadedAvatar = avatarUrl || "https://i.ibb.co/0jyFNp6w/my-photo.jpg";
+  const loadedAvatar = avatarUrl || myPhotoUrl;
   const defaultIntro = [t.p1, t.p2, t.p3];
   const displayIntro = customIntro ? customIntro[lang].split('\n').filter(p => p.trim() !== '') : defaultIntro;
 
